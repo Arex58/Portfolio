@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#16232d">
+  <meta name="description" content="Step into Alex Pena's interactive developer desktop. Games, web development, JARVIS experiments and a little personality.">
+  <title>Alejandro Pena · Rainbyte Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght,SOFT,WONK@9..144,500,70,1;9..144,650,70,1&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="assets/rainbyte.svg">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="cozy.css">
+  <script src="script.js" defer></script>
+</head>
+<body data-theme="night">
+<a class="skip-link" href="#homeTitle">Skip to main content</a>
+
+<header class="menubar">
+  <div class="brand"><img src="assets/rainbyte.svg" width="42" height="42" alt="Rain cloud and terminal logo"><span class="brand-text">rainbyte studio<small>ALEJANDRO PENA / PERSONAL WORKSPACE</small></span></div>
+  <nav class="primary-nav" aria-label="Main navigation">
+    <button type="button" data-open="projects">projects</button><button type="button" data-open="resume">resume</button><button type="button" data-open="contact">say hello ↗</button>
+  </nav>
+  <div class="header-status"><span class="status-dot"></span><span>open to opportunities</span></div>
+</header>
+<main class="desktop" id="desktop">
+  <div class="wallpaper" aria-hidden="true"><div class="room-glow"></div><div class="rain-pane"></div></div>
+  <div class="desktop-content">
+    <section class="hello-panel" aria-labelledby="homeTitle">
+      <p class="kicker"><span class="status-dot"></span> A LITTLE RAIN. A LITTLE CODE.</p>
+      <h1 id="homeTitle" tabindex="-1">Alejandro Pena<span>At home, <em>building things.</em></span></h1>
+      <p class="intro-copy">Developer, gamer &amp; curious human in Los Angeles.<br>Websites, games, and useful little experiments — best made on a rainy night, with a warm drink nearby.</p>
+      <div class="quick-actions"><button type="button" class="pill pill-dark" data-open="projects">See what I've made <span aria-hidden="true">↗</span></button><button type="button" class="pill pill-paper" data-open="contact">Let's build something <span aria-hidden="true">✳</span></button></div>
+      <div class="annotation"><span class="arrow-doodle">↳</span><span>Pick an icon. Make yourself at home.</span></div>
+    </section>
+    <aside class="desk-scene" aria-label="An illustrated late-night desk: code on a monitor, a warm drink, a lamp, and rain outside"><img src="assets/rainy-desk.svg" alt="" width="720" height="500"><span class="scene-caption">a quiet night. a new idea.</span></aside>
+    
+    <div class="desktop-shortcuts" aria-label="Desktop applications">
+      <button type="button" class="shortcut" data-open="about"><img class="icon-art" src="assets/icons/game_icon_about_me.png" alt="" width="88" height="88"><span>About me</span></button>
+      <button type="button" class="shortcut" data-open="projects"><img class="icon-art" src="assets/icons/game_icon_my_projects.png" alt="" width="88" height="88"><span>Projects</span></button>
+      <button type="button" class="shortcut" data-open="skills"><img class="icon-art" src="assets/icons/game_icon_toolbox.png" alt="" width="88" height="88"><span>Skills</span></button>
+      <button type="button" class="shortcut" data-open="experience"><img class="icon-art" src="assets/icons/game_icon_my_story.png" alt="" width="88" height="88"><span>My story</span></button>
+      <button type="button" class="shortcut" data-open="resume"><img class="icon-art" src="assets/icons/game_icon_resume.png" alt="" width="88" height="88"><span>Résumé</span></button>
+      <button type="button" class="shortcut" data-open="jarvis"><img class="icon-art" src="assets/icons/game_icon_jarvis.png" alt="" width="88" height="88"><span>JARVIS</span></button>
+      <button type="button" class="shortcut" data-open="contact"><img class="icon-art" src="assets/icons/game_icon_say_hi.png" alt="" width="88" height="88"><span>Say hello</span></button>
+    </div>
+    <p class="desktop-note">PERSONAL PROJECTS <span>/</span> ALWAYS A WORK IN PROGRESS</p>
+  </div>
+  <div id="windowLayer" class="window-layer"></div>
+</main>
+<footer class="taskbar" aria-label="Desktop taskbar">
+  <button type="button" class="start-btn" data-open="about" aria-label="Open About Me"><img src="assets/rainbyte.svg" width="22" height="22" alt=""> RAINBYTE/OS</button>
+  <div class="task-separator"></div><div class="task-buttons" id="taskButtons" aria-label="Open windows"></div>
+  <div class="task-spacer"></div>
+  <button class="task-action" id="themeToggle" type="button" aria-label="Switch to night mode" title="Toggle day / night">☾ <span class="task-action-name">theme</span></button>
+  <button class="task-action" id="soundToggle" type="button" aria-label="Turn sound on" aria-pressed="false" title="Optional interface sounds (off by default)">♪̸ <span class="task-action-name">sound off</span></button>
+  <time id="clock" class="clock" aria-label="Current local time">--:--</time>
+</footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<template id="tpl-about"><div class="inside about-inside">
+  <div class="window-kicker">FILE / PROFILE / 2026</div>
+  <div class="about-header"><figure class="avatar-frame"><img src="assets/alex-smokey.png" alt="Alejandro cuddling his cat, Smokey" width="1353" height="1147"><figcaption>Me &amp; Smokey, my desk companion.</figcaption></figure><div><span class="small-sticker">NICE TO MEET YOU!</span><h2>I'm Alejandro.<br><em>But Alex works.</em></h2><p class="lead">Developer, problem solver, lifelong learner, and taekwondo instructor from Los Angeles.</p></div></div>
+  <div class="two-cols"><div><h3>A little about me</h3><p>I graduated from Cal State LA in May 2025 with a B.S. in Computer Science. I enjoy building things people can actually use, whether that's a business website, a 3D game, or a desktop assistant.</p><p>When I'm not coding, there's a good chance I'm teaching taekwondo, playing video games, or taking a computer apart to see how it works. My favorite kind of evening? Rain outside, a hot drink, Smokey nearby, and something interesting to build.</p></div><div class="paper-note"><span>THE SHORT VERSION</span><p>CS grad · LA based<br>Builder of things<br>Taekwondo instructor<br>Game enthusiast</p><button type="button" data-open="contact" class="text-link">Have a project? Let's talk ↗</button></div></div>
+  <div class="window-bottom">Made with curiosity, a keyboard, and probably too much coffee. ☕</div>
+</div></template>
+
+<template id="tpl-projects"><div class="inside explorer-inside">
+ <div class="window-kicker">MY COMPUTER / PROJECTS <span class="files-count">04 ITEMS</span></div>
+ <div class="explorer-head"><div><h2>Things I've built <em>↘</em></h2><p>Real projects, real lessons, still learning every day.</p></div><span class="explorer-stamp">FILE CABINET<br>NO. 01</span></div>
+ <div class="file-list">
+  <button type="button" class="file-row" data-open="project-jarvis"><span class="file-visual file-visual-photo"><img src="assets/jarvis-emblem.png" alt="" loading="lazy"></span><span class="file-desc"><strong>JARVIS <small>2026 — NOW</small></strong><span>A local personal AI / automation experiment</span></span><span class="file-arrow">↗</span></button>
+  <button type="button" class="file-row" data-open="project-game"><span class="file-visual file-visual-photo"><img src="Photos/taekwondo-game.png" alt="" loading="lazy"></span><span class="file-desc"><strong>Taekwondo Fighting Game <small>2024 — 2025</small></strong><span>A 3D fighting game made in Unity</span></span><span class="file-arrow">↗</span></button>
+  <button type="button" class="file-row" data-open="project-nightcrawler"><span class="file-visual file-visual-photo"><img src="Photos/nightcrawler-artwork.png" alt="" loading="lazy"></span><span class="file-desc"><strong>Nightcrawler Collectibles <small>IN DEVELOPMENT</small></strong><span>Custom controller storefront and order workflow</span></span><span class="file-arrow">↗</span></button>
+  <button type="button" class="file-row" data-open="project-academy"><span class="file-visual file-visual-photo"><img src="Photos/academy-logo.png" alt="" loading="lazy"></span><span class="file-desc"><strong>Taekwondo Academy Website <small>LIVE SITE</small></strong><span>A real business website with PHP &amp; MySQL</span></span><span class="file-arrow">↗</span></button>
+ </div><p class="explorer-footer">TIP: Click a folder to open its own little world. ✦</p>
+</div></template>
+
+<template id="tpl-project-jarvis"><article class="inside project-detail jarvis-detail"><div class="window-kicker">PROJECT 01 / IN PROGRESS</div><figure class="project-photo-panel jarvis-photo-panel"><img src="assets/jarvis-emblem.png" alt="Illustrated J.A.R.V.I.S. HUD emblem"></figure><div class="project-intro"><span class="eyebrow">01 / EXPERIMENTAL AI</span><h3>What if my computer could feel a little more like a partner?</h3><p>JARVIS is my ongoing Windows-based assistant experiment. I use Python, JavaScript, and AI-assisted development to explore automation, local workflows, voice interfaces, and safer ways for an assistant to interact with a computer.</p></div><div class="project-facts"><span>PYTHON</span><span>JAVASCRIPT</span><span>WINDOWS</span><span>AUTOMATION</span></div><div class="project-note">⏳ This is an active personal project, not a finished public product. A real demo and screenshots can be added when ready.</div></article></template>
+
+<template id="tpl-project-game"><article class="inside project-detail game-detail"><div class="window-kicker">PROJECT 02 / SOLO GAME PROJECT</div><figure class="project-photo-panel game-photo-panel"><img src="Photos/taekwondo-game.png" alt="Screenshot from the 3D taekwondo fighting game"></figure><div class="project-intro"><span class="eyebrow">02 / GAME DEVELOPMENT</span><h3>Building a fighting game from the inside out.</h3><p>A solo 3D taekwondo combat project developed as part of my Computer Science studies. I worked on movement, hit detection, animations, combo strings, enemy AI, environments, and menus. One memorable bug involved getting attack animations to chain into a continuous combo.</p></div><div class="video-block"><div class="video-head"><span>▶ ACTUAL PROJECT TRAILER</span><a href="https://youtu.be/wflFSHQjeUA" target="_blank" rel="noopener noreferrer">Watch on YouTube ↗</a></div><iframe class="youtube-player" loading="eager" src="https://www.youtube-nocookie.com/embed/wflFSHQjeUA?playsinline=1&amp;rel=0" title="Alex's Taekwondo Game Trailer" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe><p class="video-help">If the player cannot play here, <a href="https://youtu.be/wflFSHQjeUA" target="_blank" rel="noopener noreferrer">watch the original trailer on YouTube ↗</a>.</p></div><div class="project-facts"><span>UNITY 3D</span><span>C#</span><span>AI COMBAT</span><span>ANIMATION</span></div></article></template>
+
+<template id="tpl-project-nightcrawler"><article class="inside project-detail crawler-detail"><div class="window-kicker">PROJECT 03 / IN DEVELOPMENT</div><figure class="project-photo-panel nightcrawler-photo-panel"><img src="Photos/nightcrawler-artwork.png" alt="Artwork used for the Nightcrawler Collectibles project"></figure><div class="project-intro"><span class="eyebrow">03 / WEB DEVELOPMENT</span><h3>A storefront for controllers with personality.</h3><p>I'm building a custom controller website for my brother's business idea. The project explores product galleries, custom order requests, admin-managed estimates, and clearer ways to reconcile customer orders with payments made through external apps.</p></div><div class="project-note">🚧 Work in progress. The shop is still in development; this artwork is a visual from the project.</div><div class="project-facts"><span>HTML</span><span>CSS</span><span>JAVASCRIPT</span><span>ORDER WORKFLOWS</span></div></article></template>
+
+<template id="tpl-project-academy"><article class="inside project-detail academy-detail"><div class="window-kicker">PROJECT 04 / DEPLOYED WEBSITE</div><figure class="project-photo-panel academy-photo-panel"><img src="Photos/academy-logo.png" alt="Ultimate Taekwondo Academy logo"></figure><div class="project-intro"><span class="eyebrow">04 / FULL-STACK WEBSITE</span><h3>A website that a real local business uses.</h3><p>I built and launched a responsive website using PHP, MySQL, HTML, CSS, and JavaScript, including public-facing pages and password-protected admin tools. I also worked on deployment and troubleshooting using GoDaddy and cPanel.</p></div><a class="pill pill-dark project-visit" href="https://utkda.com/#academy" target="_blank" rel="noopener noreferrer">Visit the real website ↗</a><div class="project-facts"><span>PHP</span><span>MYSQL</span><span>HTML/CSS</span><span>JAVASCRIPT</span><span>DEPLOYMENT</span></div></article></template>
+
+<template id="tpl-skills"><div class="inside skills-inside"><div class="window-kicker">SYSTEM / SKILLS INVENTORY</div><div class="skills-header"><h2>My <em>toolbox.</em></h2><span class="chip-doodle">✳</span></div><p>Things I've worked with, learned, broken, and eventually fixed.</p><div class="skill-section"><span>01 / CODE &amp; WEB</span><div><b>Python</b><b>JavaScript</b><b>C#</b><b>PHP</b><b>SQL / MySQL</b><b>HTML &amp; CSS</b></div></div><div class="skill-section"><span>02 / TOOLS &amp; BUILDS</span><div><b>Unity</b><b>Git</b><b>Visual Studio</b><b>cPanel</b><b>Windows</b><b>AI-assisted coding</b></div></div><div class="skill-section"><span>03 / I ENJOY SOLVING</span><div><b>UI &amp; websites</b><b>Debugging</b><b>Gameplay systems</b><b>Desktop support</b><b>Hardware repair</b><b>Problem solving</b></div></div><div class="project-note">Skill levels vary. This is a list of tools and subjects I've actually used or practiced, not a claim of mastery.</div></div></template>
+
+<template id="tpl-experience"><div class="inside experience-inside"><div class="window-kicker">SYSTEM / TIMELINE.LOG</div><h2>The path <em>so far.</em></h2><p>It turns out teaching people and debugging software have something in common: you have to pay attention, stay curious, and explain things clearly.</p><div class="timeline"><div class="timeline-item"><span>2026 → NOW</span><div><h3>Instructor · Ideal Martial Arts</h3><p>Helping students grow, communicating with families, and keeping classes running in San Gabriel.</p></div></div><div class="timeline-item"><span>2025 → NOW</span><div><h3>Game Playtesting · Good Gamer Group</h3><p>Occasional paid sessions testing unreleased games, reproducing issues, and giving developers clear feedback.</p></div></div><div class="timeline-item"><span>2025</span><div><h3>B.S. Computer Science · Cal State LA</h3><p>Graduated in May 2025. Built a 3D fighting game during my studies.</p></div></div><div class="timeline-item"><span>2016 → 2026</span><div><h3>Instructor · Ultimate Taekwondo Academy</h3><p>Years of coaching, class planning, leadership, and helping students get better, one practice at a time.</p></div></div></div><button type="button" class="pill pill-paper" data-open="resume">Open my résumé ↗</button></div></template>
+
+<template id="tpl-resume"><div class="inside resume-inside"><div class="resume-toolbar"><div><div class="window-kicker">DOCUMENT / CV / PDF</div><h2>The <em>résumé.</em></h2></div><a class="pill pill-dark" href="assets/Alejandro_Pena_Resume.pdf" download="Alejandro_Pena_Resume.pdf">Download PDF ↓</a></div><p>Want the less playful version? This is the real thing.</p><iframe src="assets/Alejandro_Pena_Resume.pdf#toolbar=1" title="Alejandro Pena résumé PDF viewer"></iframe><p class="pdf-fallback">If the preview doesn't load, <a href="assets/Alejandro_Pena_Resume.pdf" target="_blank" rel="noopener noreferrer">open the PDF in a new tab ↗</a></p></div></template>
+
+<template id="tpl-contact"><div class="inside contact-inside"><div class="window-kicker">INBOX / COMPOSE NEW MESSAGE</div><div class="contact-illustration" aria-hidden="true"><img src="assets/icons/game_icon_say_hi.png" alt=""></div><h2>Have something<br><em>in mind?</em></h2><p>Need a website, a developer, some technical help, or just want to talk about an idea? I’d love to hear about it.</p><div class="address-note"><span>TO:</span><strong>alejandropena.tech@gmail.com</strong></div><a class="pill pill-dark contact-mail" href="mailto:alejandropena.tech@gmail.com?subject=Hello%20Alejandro%20%E2%80%94%20Let%27s%20build%20something">Open email composer ↗</a><div class="contact-links"><a href="https://www.linkedin.com/in/alejandro-pena-b168671b1" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a><button type="button" class="text-link copy-email" data-copy="alejandropena.tech@gmail.com">Copy email address ⧉</button></div><div class="project-note">No hidden contact form or backend here. The button launches your own mail app.</div></div></template>
+
+<template id="tpl-jarvis"><div class="inside assistant-inside"><div class="window-kicker">EXPERIMENT / DESKTOP GUIDE</div><div class="assistant-heading"><img class="assistant-icon" src="assets/icons/game_icon_jarvis.png" alt=""><div><h2>JARVIS <em>mini.</em></h2><p>Portfolio navigation assistant · scripted demo, not live AI</p></div></div><div id="chatLog" class="chat-log" role="log" aria-live="polite"><p class="bot-bubble">Hey! I'm a tiny scripted guide living on this website. Ask about Alex's projects, skills, résumé, or how to get in touch.</p></div><div class="suggested-prompts"><button type="button" data-question="Show me the projects">Projects</button><button type="button" data-question="What skills does Alex have?">Skills</button><button type="button" data-question="How can I contact him?">Contact</button></div><form id="jarvisForm" class="assistant-form"><label class="sr-only" for="jarvisQuestion">Message the scripted assistant</label><input id="jarvisQuestion" name="question" autocomplete="off" placeholder="Try: show projects" maxlength="180" required><button type="submit" aria-label="Send question">↗</button></form></div></template>
+
+<div class="boot-screen" id="bootScreen" role="dialog" aria-modal="true" aria-label="Starting Rainbyte desktop" hidden><div class="boot-monitor"><img src="assets/rainbyte.svg" width="64" height="64" alt=""><p>RAINBYTE/OS</p><h2>A little space to make things.</h2><div class="boot-track"><span></span></div><p class="boot-caption">Waking up the workspace…</p><button id="skipBoot" class="pill pill-paper">Enter desktop · skip startup</button></div></div>
+
+</body>
+</html>
