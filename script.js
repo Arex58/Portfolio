@@ -263,12 +263,12 @@
       const userBubble = document.createElement('p'); userBubble.className = 'user-bubble'; userBubble.textContent = text;
       log.appendChild(userBubble);
       const q = text.toLowerCase(); let response = ''; let open = null;
-      if (/project|built|build|made|work sample|portfolio|website|game/.test(q)) { response = 'Alex has built a Unity fighting game, a deployed martial arts website, and ongoing JARVIS and custom-controller projects. Opening the project folders now.'; open = 'projects'; }
-      else if (/skill|language|code|tech|stack|tools/.test(q)) { response = 'His toolbox includes Python, JavaScript, C#, PHP, MySQL, Unity, Git, HTML/CSS, and lots of troubleshooting. Here is the toolbox.'; open = 'skills'; }
+      if (/project|built|build|made|work sample|portfolio|website|game/.test(q)) { response = 'Alex built a solo Unity taekwondo game and the Ultimate Taekwondo Academy website. His JARVIS assistant and the controller shop for his brother are still in development. Opening the projects now.'; open = 'projects'; }
+      else if (/skill|language|code|tech|stack|tools/.test(q)) { response = 'Alex used Unity and C# for the game, PHP and MySQL for the academy site, and Python and JavaScript for JARVIS. Opening his skills list.'; open = 'skills'; }
       else if (/resume|résumé|cv|hire|job|experience/.test(q)) { response = 'The résumé PDF is right over here. It has his education, projects, and experience.'; open = 'resume'; }
       else if (/contact|email|reach|message|hello/.test(q)) { response = 'You can email Alex directly from his contact window. Opening it for you!'; open = 'contact'; }
       else if (/who|about|school|degree|alejandro/.test(q)) { response = 'Alex is a Los Angeles developer and Cal State LA Computer Science graduate. He also teaches taekwondo. Here is more about him.'; open = 'about'; }
-      else if (/thank/.test(q)) { response = 'You are very welcome. Go make something cool today. ✳'; }
+      else if (/thank/.test(q)) { response = 'You\'re welcome!'; }
       else { response = 'I’m only a scripted portfolio guide, so I can answer simple site questions. Try asking about projects, skills, the résumé, or contact info.'; }
       const bubble = document.createElement('p'); bubble.className = 'bot-bubble'; bubble.textContent = response;
       log.appendChild(bubble); log.scrollTop = log.scrollHeight;
