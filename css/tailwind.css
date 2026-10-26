@@ -1,0 +1,25 @@
+/* No Preflight: retain the established desktop's element defaults.
+   Prefixing utilities prevents collisions with existing classes (e.g. .container). */
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme) prefix(dh);
+@import "tailwindcss/utilities.css" layer(utilities) prefix(dh) source(none);
+@import "../styles.css" layer(components);
+@import "../cozy.css" layer(components);
+@source "../index.html";
+@source "../script.js";
+
+@theme static {
+  --color-midnight: #151c23;
+  --color-slate: #263440;
+  --color-mist: #8faab9;
+  --color-cloud: #c7d0d5;
+  --color-amber: #d6ac78;
+  --color-cream: #ece8df;
+  --font-sans: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Fraunces", Georgia, serif;
+  --font-mono: "Space Mono", monospace;
+  --spacing: 0.25rem;
+  --radius-window: 0.75rem;
+  --shadow-window: 0 16px 40px #080e1640, 0 2px 6px #080e1620;
+  --shadow-paper: 0 3px 0 #151c2314;
+}

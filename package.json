@@ -1,0 +1,19 @@
+{
+  "name": "drizzlehaven-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "DrizzleHaven Studio — Alejandro Pena's desktop portfolio",
+  "scripts": {
+    "dev": "tailwindcss -i ./css/tailwind.css -o ./assets/portfolio.css --watch",
+    "build": "tailwindcss -i ./css/tailwind.css -o ./assets/portfolio.css --minify",
+    "preview": "python -m http.server 8000 --bind 127.0.0.1",
+    "check": "node --check script.js",
+    "test": "npm run check && playwright test",
+    "test:assets": "python tests/check_assets.py"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "@tailwindcss/cli": "4.3.3",
+    "tailwindcss": "4.3.3"
+  }
+}

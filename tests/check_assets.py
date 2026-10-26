@@ -2,10 +2,21 @@ from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlsplit, unquote
 from urllib.request import urlopen
+from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
+from functools import partial
+from threading import Thread
+import atexit
 import re
 import zipfile
 
 root=Path(__file__).resolve().parents[1]
+# Self-contained HTTP check, including the same subdirectory used on GitHub Pages.
+class QuietHandler(SimpleHTTPRequestHandler):
+    def log_message(self, *args): pass
+server=ThreadingHTTPServer(('127.0.0.1',0),partial(QuietHandler,directory=str(root.parent)))
+Thread(target=server.serve_forever,daemon=True).start()
+atexit.register(lambda: (server.shutdown(), server.server_close()))
+base=f'http://127.0.0.1:{server.server_port}/{root.name}/'
 class Check(HTMLParser):
     def __init__(self):
         super().__init__(); self.ids=[]; self.opens=[]; self.assets=set(); self.images=[]
@@ -22,7 +33,8 @@ assert len(c.ids)==len(set(c.ids)), 'Duplicate IDs'
 for name in c.opens:assert 'tpl-'+name in c.ids, 'Missing template '+name
 for p in c.assets:
     assert (root/p).is_file(), 'Missing asset '+p
-    with urlopen('http://127.0.0.1:8000/'+p) as r:
+    assert not p.startswith('/'), 'Root-relative path breaks /Portfolio/: '+p
+    with urlopen(base+p) as r:
         assert r.status==200,p
         r.read()
 assert len(list((root/'assets/icons').glob('*.png')))==7
@@ -31,12 +43,21 @@ if archive.exists():
     with zipfile.ZipFile(archive) as z:
         for name in z.namelist():
             if name.endswith('.png'):assert z.read(name)==(root/'assets/icons'/name).read_bytes(), 'Modified supplied icon '+name
-for p in ['script.js','styles.css','cozy.css']:
-    with urlopen('http://127.0.0.1:8000/'+p) as r:
+for p in ['script.js','styles.css','cozy.css','assets/portfolio.css']:
+    with urlopen(base+p) as r:
         assert r.status==200
         r.read()
-for p in ['styles.css','cozy.css']:
+for p in ['styles.css','cozy.css','assets/portfolio.css']:
     s=(root/p).read_text(encoding='utf-8');assert s.count('{')==s.count('}'),p
 for p in ['index.html','script.js','cozy.css']:
     s=(root/p).read_text(encoding='utf-8');assert '\ufffd' not in s, 'Invalid encoding in '+p
 print(f'PASS: {len(c.assets)} local assets return HTTP 200; {len(c.opens)} launch targets resolve; {len(c.images)} images have alt attributes; IDs unique; CSS braces balanced; UTF-8 intact.')
+compiled=(root/'assets/portfolio.css').read_text(encoding='utf-8')
+assert 'tailwindcss v4.' in compiled, 'Missing compiled Tailwind v4 stylesheet'
+assert 'tailwindcss/preflight' not in (root/'css/tailwind.css').read_text(encoding='utf-8')
+for groups in re.findall(r'''url\((?:"([^"]*)"|'([^']*)'|([^)]*))\)''',compiled):
+    url=next(value for value in groups if value)
+    if not urlsplit(url).scheme:
+        assert not url.startswith('/'), url
+        with urlopen(base+'assets/'+url) as r: assert r.status==200,url
+print('PASS: compiled Tailwind CSS and CSS asset URLs resolve under the project subdirectory; no Preflight import.')

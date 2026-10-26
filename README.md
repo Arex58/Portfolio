@@ -1,64 +1,80 @@
-# Rainbyte Studio — Alejandro Pena's personal workspace
+﻿# DrizzleHaven Studio
 
-A cozy rainy-night portfolio in plain HTML, CSS, and JavaScript. Rainbyte Studio is a temporary, replaceable identity; no registration or commercial clearance is claimed.
+Alejandro Pena's personal desktop portfolio. **Where ideas find their home.**
 
-## Run locally
+The existing HTML templates, vanilla JavaScript window manager, projects, supplied artwork, resume, and links remain in place. Tailwind CSS v4 is a build-time dependency; the published site needs no Node server or browser CDN.
 
-From this folder:
+## Development
+
+Requires Node.js 20+ with npm, and Python 3 for the preview and asset tests.
 
 ```powershell
-python -m http.server 8000 --bind 127.0.0.1
+npm ci
+npm run dev
 ```
 
-Open `http://127.0.0.1:8000`. No build or dependencies are required. Serve over HTTP(S), rather than opening `index.html` as a file, for embedded YouTube playback. Fonts, YouTube, and external links require internet; the portfolio uses local assets.
+The official Tailwind CLI watches `css/tailwind.css`, its imported stylesheets, `index.html`, and `script.js`, writing `assets/portfolio.css`. In another terminal:
 
-## What changed
+```powershell
+npm run preview
+```
 
-- Illustrated coding desk, rainy window, warm lamp and drink; muted navy, teal, cream and amber palettes.
-- Alejandro Pena remains prominent; original rain-cloud/terminal logo in `assets/rainbyte.svg` doubles as the favicon.
-- A 1.6-second startup can be skipped immediately. It runs once per tab session and is skipped for reduced-motion preferences.
-- All seven supplied ZIP icons are used unchanged, with transparency intact. Desktop icon hover/focus scales 1.08 over 210 ms; reduced motion removes movement.
-- Full cat avatar featuring Alejandro and Smokey, and supplied JARVIS emblem. All project art uses contain framing with natural proportions.
-- Existing project content, résumé PDF, email, LinkedIn, academy site, scripted JARVIS guide, and draggable/minimizable windows retained.
+Open http://127.0.0.1:8000. Serve over HTTP(S) for the YouTube embed and clipboard support. Google Fonts and YouTube require an internet connection; system font fallbacks keep the page readable offline.
 
-## Edit the project
+## Production and GitHub Pages
 
-| File | Purpose |
+```powershell
+npm run build
+npm run test:assets
+npm test
+```
+
+`npm run build` generates minified local CSS. **Commit `assets/portfolio.css` with every source/style change.** It is deliberately not ignored: GitHub Pages publishing from a branch does not run npm automatically. Keep `index.html`, the compiled CSS, `script.js`, `assets/`, `Photos/`, and `.nojekyll` in the publishing branch's root. Configure Pages to publish from that branch and root folder.
+
+All local document, stylesheet, script, and image references are relative, including the CSS rain texture. The site works at `/Portfolio/` without a framework router or base-URL rewrite. To preview that exact path, stop the regular preview server and run:
+
+```powershell
+python -m http.server 8000 --bind 127.0.0.1 --directory ..
+```
+
+Then open http://127.0.0.1:8000/Portfolio/. The browser tests automatically start this server when port 8000 is free.
+
+## Styling and files
+
+| File | Responsibility |
 | --- | --- |
-| `index.html` | Portfolio text, templates, links, desktop icon mapping |
-| `styles.css` | Existing base window and content layout |
-| `cozy.css` | Rainbyte palette, responsive overrides, image framing, new desktop styling |
-| `script.js` | Window manager, boot, theme, local guide, lazy loading, video errors; `iconFiles` maps window/taskbar art |
-| `assets/rainbyte.svg` | Original temporary studio mark and favicon |
-| `assets/rainy-desk.svg` | Original illustrated workspace |
-| `assets/alex-smokey.png` | Supplied Cozy Cartoon Cat Cuddle Avatar |
-| `assets/jarvis-emblem.png` | Supplied J.A.R.V.I.S. HUD Emblem |
-| `assets/Alejandro_Pena_Resume.pdf` | Existing résumé, unchanged |
+| `css/tailwind.css` | CSS entry, brand palette, font families, spacing, radii, shadows, explicit source scanning |
+| `styles.css` | Retained desktop and application layout rules |
+| `cozy.css` | Semantic day/night colors, DrizzleHaven styling, rain, image framing, responsive and container rules |
+| `assets/portfolio.css` | Generated stylesheet loaded by the page; include in commits |
+| `index.html` | Existing content and application templates, new studio identity |
+| `script.js` | Boot, app launcher, drag/resize, taskbar, themes, audio, JARVIS mini, trailer handling |
+| `assets/drizzlehaven.svg` | Custom cloud-and-home studio mark and favicon |
+| `assets/rain-streaks.svg` | Small repeating SVG rain texture |
+| `assets/rainy-desk.svg` | Existing illustrated desk, recolored for the overcast palette |
+| `playwright.config.js`, `tests/desktop.spec.js` | Browser regression checks and screenshots |
+| `tests/check_assets.py` | Self-contained asset, template, encoding, and subdirectory checks |
 
-ZIP artwork mapping in `assets/icons/`: `about_me` → About, `my_projects` → Projects, `toolbox` → Skills, `my_story` → Story, `resume` → Résumé, `jarvis` → JARVIS, `say_hi` → Contact. Original filenames have the `game_icon_` prefix and `.png` extension. Supplied raster art was copied without modification.
+The palette is midnight `#151C23`, slate `#263440`, mist `#8FAAB9`, cloud `#C7D0D5`, amber `#D6AC78`, and cream `#ECE8DF`. Semantic roles provide contrasting day/night surfaces. Existing custom CSS uses the same theme variables as new utilities.
 
-## YouTube diagnosis and remaining limit
+Tailwind is introduced incrementally: `dh:` prefixed utilities avoid collisions with old classes, and Preflight is omitted to preserve existing element defaults. The legacy styles sit in the components layer. Custom rain animation and window behavior remain ordinary CSS/JavaScript. See the official [CLI installation](https://tailwindcss.com/docs/installation/tailwind-cli) and [disabling Preflight](https://tailwindcss.com/docs/preflight#disabling-preflight) documentation.
 
-The original video is retained: https://youtu.be/wflFSHQjeUA.
+Dependencies: `tailwindcss` 4.3.3, `@tailwindcss/cli` 4.3.3, and `@playwright/test` for development/testing only. `package-lock.json` fixes the installed dependency graph.
 
-The previous embed URL was already valid. No application CSP or overlay was found blocking it. The old README recommended opening the HTML directly, which can omit the HTTP referrer that YouTube requires; this is a plausible cause, **not a confirmed diagnosis for this video**. YouTube documents missing client identification as error 153: https://developers.google.com/youtube/iframe_api_reference#onError.
+## Desktop controls
 
-The player now loads when its project window opens, uses inline playback, an explicit HTTP(S) origin and referrer policy, a responsive frame with a 200px minimum height, and no autoplay. The official player API reports unavailable/private videos, owner-disabled embedding, client identification failures, and playback errors in the page. A permanent **Watch on YouTube** link preserves access to the original URL. Minimizing pauses an initialized video; closing destroys it.
+- Open any shortcut or header action; use titlebar controls to minimize, maximize/restore, or close.
+- Drag a titlebar, or move the active window with **Alt+Shift+Arrow**.
+- Drag the lower-right resize grip, or focus it and use the arrow keys.
+- **Escape** closes the top window and restores focus. Taskbar buttons restore minimized apps.
+- Mobile uses full-screen application sheets with internal scrolling.
+- Boot is skippable, runs once per tab session, and is bypassed for reduced motion. Rain and hover motion also stop for reduced motion; rain pauses in background tabs.
+- Day/night preference is saved locally. Interface sound is opt-in and off by default.
 
-Actual video playback, owner embedding permissions, and availability could not be confirmed: Chrome and in-app browser connections were unavailable, and direct YouTube requests failed. No successful-playback claim is made.
+All seven supplied app icons and project images remain intact. Project images use contain framing. JARVIS mini remains a scripted navigation guide, separate from the in-progress Windows assistant. No experience, project features, or achievements were added.
 
-## Verification
+## Tests and limits
 
-Check JavaScript syntax:
+`npm test` runs the JavaScript syntax check and Playwright against installed Chrome. Set `PLAYWRIGHT_CHANNEL=msedge` to use installed Edge. Stop any unrelated server on port 8000 first. `npm run test:assets` starts its own temporary server and needs no setup. Screenshots and failure traces are written to ignored `test-results/`.
 
-```powershell
-node --check script.js
-```
-
-With the local server running:
-
-```powershell
-python tests/check_assets.py
-```
-
-See `VERIFICATION.md` for executed results and the remaining browser checks. No desktop/mobile screenshots were generated because browser automation was unavailable.
+See `VERIFICATION.md` for the executed checks and external-service limits. This repository change does not publish or push the website.

@@ -1,4 +1,4 @@
-/* Alex/OS: a tiny dependency-free desktop written in vanilla JavaScript.
+/* DrizzleHaven/OS: a tiny dependency-free desktop written in vanilla JavaScript.
    All portfolio content comes from local <template> elements in index.html.
    The JARVIS widget is a scripted site guide, NOT a live AI service. */
 (() => {
@@ -164,13 +164,45 @@
       if (!drag) return;
       const b = desktopBounds();
       const left = clamp(drag.left + event.clientX - drag.x, 0, b.width - el.offsetWidth);
-      const top = clamp(drag.top + event.clientY - drag.y, 0, b.height - 44);
+      const top = clamp(drag.top + event.clientY - drag.y, 0, b.height - el.offsetHeight);
       el.style.left = `${left}px`; el.style.top = `${top}px`;
     });
     function end() { drag = null; }
     titlebar.addEventListener('pointerup', end);
     titlebar.addEventListener('pointercancel', end);
+    titlebar.addEventListener('lostpointercapture', end);
     titlebar.addEventListener('dblclick', event => { if (!isMobile() && !event.target.closest('button')) maximizeWindow(el); });
+  }
+  function addResizeSupport(el) {
+    const handle = document.createElement('button');
+    handle.type = 'button'; handle.className = 'window-resize'; handle.textContent = '◢';
+    handle.setAttribute('aria-label', 'Resize window (use arrow keys)');
+    handle.title = 'Drag to resize, or focus and use arrow keys';
+    let start = null;
+    function resize(width, height) {
+      const b = desktopBounds();
+      const maxWidth = b.width - parseFloat(el.style.left) - 8;
+      const maxHeight = b.height - parseFloat(el.style.top) - 8;
+      el.style.width = `${clamp(width, Math.min(340, maxWidth), maxWidth)}px`;
+      el.style.height = `${clamp(height, Math.min(250, maxHeight), maxHeight)}px`;
+    }
+    handle.addEventListener('pointerdown', event => {
+      if (event.button !== 0 || isMobile() || el.classList.contains('is-maximized')) return;
+      event.preventDefault(); focusWindow(el);
+      start = { x: event.clientX, y: event.clientY, width: el.offsetWidth, height: el.offsetHeight };
+      handle.setPointerCapture(event.pointerId);
+    });
+    handle.addEventListener('pointermove', event => {
+      if (start) resize(start.width + event.clientX - start.x, start.height + event.clientY - start.y);
+    });
+    ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(type => handle.addEventListener(type, () => { start = null; }));
+    handle.addEventListener('keydown', event => {
+      if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key) || isMobile() || event.altKey) return;
+      event.preventDefault();
+      resize(el.offsetWidth + (event.key === 'ArrowRight' ? 20 : event.key === 'ArrowLeft' ? -20 : 0),
+        el.offsetHeight + (event.key === 'ArrowDown' ? 20 : event.key === 'ArrowUp' ? -20 : 0));
+    });
+    el.appendChild(handle);
   }
   function openApp(name) {
     if (!appNames[name]) return;
@@ -197,7 +229,7 @@
     content.appendChild(template.content.cloneNode(true));
     el.append(titlebar, content);
     opened.set(name, el); layer.appendChild(el);
-    positionFor(name, el); addDragSupport(el, titlebar);
+    positionFor(name, el); addDragSupport(el, titlebar); addResizeSupport(el);
     el.addEventListener('pointerdown', () => { if (!el.classList.contains('is-active')) focusWindow(el); });
     el.addEventListener('focusin', () => { if (!el.classList.contains('is-active')) focusWindow(el); });
     focusWindow(el); el.focus({ preventScroll: true }); beep(670);
@@ -210,10 +242,10 @@
     themeToggle.innerHTML = `${isNight ? '☀' : '☾'} <span class="task-action-name">theme</span>`;
     themeToggle.title = `Switch to ${isNight ? 'warm desk' : 'rainy night'} palette`;
     themeToggle.setAttribute('aria-label', themeToggle.title);
-    try { localStorage.setItem('rainbyte-theme', isNight ? 'night' : 'day'); } catch (_) {}
+    try { localStorage.setItem('drizzlehaven-theme', isNight ? 'night' : 'day'); } catch (_) {}
   }
   let savedTheme='night';
-  try { savedTheme=localStorage.getItem('rainbyte-theme') || 'night'; } catch (_) {}
+  try { savedTheme=localStorage.getItem('drizzlehaven-theme') || 'night'; } catch (_) {}
   setTheme(savedTheme);
   themeToggle.addEventListener('click', () => { setTheme(document.body.dataset.theme === 'night' ? 'day' : 'night'); beep(750); });
   soundToggle.addEventListener('click', () => {
@@ -229,6 +261,9 @@
     clock.dateTime = now.toISOString();
   }
   updateClock(); setInterval(updateClock, 30_000);
+  document.addEventListener('visibilitychange', () => {
+    document.body.classList.toggle('is-background', document.hidden);
+  });
   document.addEventListener('click', event => {
     const openButton = event.target.closest('[data-open]');
     if (openButton) openApp(openButton.dataset.open);
@@ -250,7 +285,7 @@
       const dx = event.key === 'ArrowLeft' ? -step : event.key === 'ArrowRight' ? step : 0;
       const dy = event.key === 'ArrowUp' ? -step : event.key === 'ArrowDown' ? step : 0;
       top.style.left = `${clamp(parseFloat(top.style.left) + dx, 0, b.width - top.offsetWidth)}px`;
-      top.style.top = `${clamp(parseFloat(top.style.top) + dy, 0, b.height - 44)}px`;
+      top.style.top = `${clamp(parseFloat(top.style.top) + dy, 0, b.height - top.offsetHeight)}px`;
     }
   });
   function setupJarvis(windowEl) {
@@ -284,10 +319,10 @@
     clearTimeout(bootTimer); boot.hidden = true;
     document.querySelectorAll('body > header, body > main, body > footer').forEach(el => el.inert = false);
     document.getElementById('homeTitle').focus({ preventScroll: true });
-    try { sessionStorage.setItem('rainbyte-booted','1'); } catch (_) {}
+    try { sessionStorage.setItem('drizzlehaven-booted','1'); } catch (_) {}
   }
   let hasBooted = false;
-  try { hasBooted = sessionStorage.getItem('rainbyte-booted') === '1'; } catch (_) {}
+  try { hasBooted = sessionStorage.getItem('drizzlehaven-booted') === '1'; } catch (_) {}
   if (!hasBooted && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
     boot.hidden = false;
     document.querySelectorAll('body > header, body > main, body > footer').forEach(el => el.inert = true);
