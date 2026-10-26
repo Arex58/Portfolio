@@ -8,36 +8,37 @@
   <title>Alejandro Pena · DrizzleHaven Studio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght,SOFT,WONK@9..144,500,70,1;9..144,650,70,1&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=VT323&display=swap" rel="stylesheet">
   <link rel="icon" type="image/svg+xml" href="assets/drizzlehaven.svg">
   <link rel="stylesheet" href="assets/portfolio.css">
   <script src="script.js" defer></script>
 </head>
 <body data-theme="night">
-<a class="skip-link" href="#homeTitle">Skip to main content</a>
+<a class="skip-link" href="#powerToggle">Skip to the monitor power button</a>
 
-<header class="menubar">
-  <div class="brand"><img src="assets/drizzlehaven.svg" width="42" height="42" alt="DrizzleHaven rain cloud and home logo"><span class="brand-text">DrizzleHaven Studio<small>CREATIVE DEVELOPMENT STUDIO</small></span></div>
-  <nav class="primary-nav" aria-label="Main navigation">
-    <button type="button" data-open="projects">projects</button><button type="button" data-open="resume">resume</button><button type="button" data-open="contact">say hello ↗</button>
-  </nav>
-  <div class="header-status"><span class="status-dot"></span><span>open to opportunities</span></div>
-</header>
+<div class="monitor-stage" id="monitorStage" data-power="off">
+  <div class="monitor-shell">
+    <div class="monitor-bezel">
+      <section class="monitor-screen" id="monitorScreen" aria-label="DrizzleHaven computer monitor">
+        <div class="monitor-off" id="monitorOff">
+          <div class="monitor-off-mark" aria-hidden="true">DH<span>_</span></div>
+          <p>DRIZZLEHAVEN / 8BIT-OS</p>
+          <h1>DISPLAY OFF</h1>
+          <span>PRESS THE POWER BUTTON TO START</span>
+        </div>
+        <div class="monitor-live" id="monitorLive" aria-hidden="true" inert>
 <main class="desktop" id="desktop">
   <div class="wallpaper" aria-hidden="true"><div class="room-glow"></div><div class="rain-pane"></div></div>
   <div class="desktop-content">
     <section class="hello-panel" aria-labelledby="homeTitle">
-      <p class="kicker dh:flex dh:items-center dh:gap-3"><svg class="weather-mark" aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 12a8 8 0 0 1 16 0H4Zm8 0v7a2 2 0 0 0 4 0M7 2 6 4m13-1-1 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> A SMALL STUDIO. A LITTLE RAIN.</p>
       <p class="studio-tagline dh:font-display">Where ideas find their home.</p>
       <h1 id="homeTitle" tabindex="-1">Alejandro Pena<span>Developer, maker.<br>You can call me <em>Alex.</em></span></h1>
       <p class="intro-copy">I build websites and games, and I teach taekwondo.<br>One of my projects brings those interests together: a 3D taekwondo fighting game I made in Unity.</p>
       <div class="quick-actions"><button type="button" class="pill pill-dark" data-open="projects">See what I've made <span aria-hidden="true">↗</span></button><button type="button" class="pill pill-paper" data-open="contact">Get in touch <span aria-hidden="true">↗</span></button></div>
-      <div class="annotation"><span class="arrow-doodle" aria-hidden="true">↳</span><span>Open an icon to look around.</span></div>
     </section>
-    <aside class="desk-scene" aria-label="An illustrated rainy-day workspace: code on a monitor, a warm drink, and a desk lamp"><img src="assets/rainy-desk.svg" alt="" width="720" height="500"><p class="scene-caption">A quiet corner for things in progress.</p></aside>
+    <aside class="desk-scene" aria-label="An illustrated rainy-day workspace: code on a monitor, a warm drink, and a desk lamp"><img src="assets/rainy-desk-pixel.png" alt="" width="180" height="125"></aside>
     
     <section class="workspace-shelf" aria-label="Desktop applications">
-    <div class="shelf-label dh:flex dh:flex-wrap dh:items-center dh:justify-between dh:gap-2"><span>01 / THE WORKSPACE</span><span>Pick a folder. Stay a while.</span></div>
     <div class="desktop-shortcuts">
       <button type="button" class="shortcut" data-open="about"><img class="icon-art" src="assets/icons/game_icon_about_me.png" alt="" width="88" height="88"><span>About me</span></button>
       <button type="button" class="shortcut" data-open="projects"><img class="icon-art" src="assets/icons/game_icon_my_projects.png" alt="" width="88" height="88"><span>Projects</span></button>
@@ -48,7 +49,6 @@
       <button type="button" class="shortcut" data-open="contact"><img class="icon-art" src="assets/icons/game_icon_say_hi.png" alt="" width="88" height="88"><span>Say hello</span></button>
     </div>
     </section>
-    <p class="desktop-note">WEBSITES <span>/</span> GAMES <span>/</span> EXPERIMENTS</p>
   </div>
   <div id="windowLayer" class="window-layer"></div>
 </main>
@@ -58,9 +58,35 @@
   <div class="task-spacer"></div>
   <button class="task-action" id="themeToggle" type="button" aria-label="Switch to warm desk palette" title="Toggle day / night">☾ <span class="task-action-name">theme</span></button>
   <button class="task-action" id="soundToggle" type="button" aria-label="Turn sound on" aria-pressed="false" title="Optional interface sounds (off by default)">♪̸ <span class="task-action-name">sound off</span></button>
+  <button class="task-action music-toggle" id="musicToggle" type="button" aria-label="Turn background music on" aria-pressed="false"><span aria-hidden="true">&#9835;</span> <span class="music-label">music off</span></button>
+  <button class="task-action volume-toggle" id="musicVolumeToggle" type="button" aria-label="Show music volume controls" aria-expanded="false" aria-controls="musicPanel" title="Music volume">VOL</button>
   <time id="clock" class="clock" aria-label="Current local time">--:--</time>
 </footer>
+<aside class="music-panel" id="musicPanel" aria-label="Background music player" hidden>
+  <div class="music-toolbar"><span>MUSIC VOLUME</span><button type="button" id="musicClose" aria-label="Close music volume controls">&#215;</button></div>
+  <audio id="backgroundMusic" src="assets/background-music.mp3" preload="none" loop aria-label="Kiss the Rain by Yiruma"></audio>
+  <div class="music-volume">
+    <label for="musicVolume">Volume <output id="musicVolumeValue" for="musicVolume">30%</output></label>
+    <input id="musicVolume" type="range" min="0" max="100" value="30" step="1" aria-label="Background music volume">
+  </div>
+  <p id="musicStatus" role="status" aria-live="polite"></p>
+</aside>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</div>
+      </section>
+      <div class="monitor-bezel-label"><span>DRIZZLEHAVEN / CRT-08</span><span class="monitor-led" id="monitorLed" aria-hidden="true"></span></div>
+    </div>
+    <div class="monitor-neck" aria-hidden="true"></div>
+    <div class="monitor-base">
+      <span class="monitor-brand">DRIZZLEHAVEN</span>
+      <button type="button" class="monitor-power" id="powerToggle" aria-label="Power on monitor" aria-pressed="false">
+        <span class="power-symbol" aria-hidden="true">⏻</span>
+        <span class="power-label" id="powerLabel">POWER ON</span>
+      </button>
+      <span class="monitor-status" id="monitorStatus" role="status" aria-live="polite">SYSTEM OFFLINE</span>
+    </div>
+  </div>
+</div>
 
 <template id="tpl-about"><div class="inside about-inside">
   <div class="window-kicker">FILE / PROFILE / 2026</div>
@@ -96,8 +122,6 @@
 <template id="tpl-contact"><div class="inside contact-inside"><div class="window-kicker">INBOX / COMPOSE NEW MESSAGE</div><div class="contact-illustration" aria-hidden="true"><img src="assets/icons/game_icon_say_hi.png" alt=""></div><h2>Have something<br><em>in mind?</em></h2><p>Have a role or project in mind, or a question about my work? Send me an email.</p><div class="address-note"><span>TO:</span><strong>alejandropena.tech@gmail.com</strong></div><a class="pill pill-dark contact-mail" href="mailto:alejandropena.tech@gmail.com?subject=Hello%20Alejandro%20%E2%80%94%20Let%27s%20build%20something">Open email composer ↗</a><div class="contact-links"><a href="https://www.linkedin.com/in/alejandro-pena-b168671b1" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a><button type="button" class="text-link copy-email" data-copy="alejandropena.tech@gmail.com">Copy email address ⧉</button></div><div class="project-note">This opens your mail app. You can also copy the address above.</div></div></template>
 
 <template id="tpl-jarvis"><div class="inside assistant-inside"><div class="window-kicker">EXPERIMENT / DESKTOP GUIDE</div><div class="assistant-heading"><img class="assistant-icon" src="assets/icons/game_icon_jarvis.png" alt=""><div><h2>JARVIS <em>mini.</em></h2><p>Portfolio navigation assistant · scripted demo, not live AI</p></div></div><div id="chatLog" class="chat-log" role="log" aria-live="polite"><p class="bot-bubble">Hi! I can open Alex's projects, skills, résumé, or contact details. I use preset replies to help you find your way around.</p></div><div class="suggested-prompts"><button type="button" data-question="Show me the projects">Projects</button><button type="button" data-question="What skills does Alex have?">Skills</button><button type="button" data-question="How can I contact him?">Contact</button></div><form id="jarvisForm" class="assistant-form"><label class="sr-only" for="jarvisQuestion">Message the scripted assistant</label><input id="jarvisQuestion" name="question" autocomplete="off" placeholder="Try: show projects" maxlength="180" required><button type="submit" aria-label="Send question">↗</button></form></div></template>
-
-<div class="boot-screen" id="bootScreen" role="dialog" aria-modal="true" aria-label="Starting DrizzleHaven desktop" hidden><div class="boot-monitor"><img src="assets/drizzlehaven.svg" width="64" height="64" alt=""><p>DrizzleHaven/OS</p><h2>Where ideas find their home.</h2><div class="boot-track"><span></span></div><p class="boot-caption">Opening the workspace…</p><button id="skipBoot" class="pill pill-paper">Enter desktop · skip startup</button></div></div>
 
 </body>
 </html>

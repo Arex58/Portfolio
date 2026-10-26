@@ -4,10 +4,22 @@
 (() => {
   'use strict';
   const desktop = document.getElementById('desktop');
+  const monitorStage = document.getElementById('monitorStage');
+  const monitorLive = document.getElementById('monitorLive');
+  const powerToggle = document.getElementById('powerToggle');
+  const powerLabel = document.getElementById('powerLabel');
+  const monitorStatus = document.getElementById('monitorStatus');
   const layer = document.getElementById('windowLayer');
   const taskButtons = document.getElementById('taskButtons');
   const themeToggle = document.getElementById('themeToggle');
   const soundToggle = document.getElementById('soundToggle');
+  const musicToggle = document.getElementById('musicToggle');
+  const musicPanel = document.getElementById('musicPanel');
+  const musicVolumeToggle = document.getElementById('musicVolumeToggle');
+  const musicAudio = document.getElementById('backgroundMusic');
+  const musicVolumeControl = document.getElementById('musicVolume');
+  const musicVolumeValue = document.getElementById('musicVolumeValue');
+  const musicStatus = document.getElementById('musicStatus');
   const clock = document.getElementById('clock');
   const toast = document.getElementById('toast');
   const appNames = {
@@ -30,6 +42,9 @@
   let audioCtx = null;
   let toastTimeout;
   let youtubeLoad;
+  let musicGeneration = 0;
+  let musicVolume = musicVolumeControl.valueAsNumber;
+  let musicPlaying = false;
   const launchers = new Map();
   // Reuse the supplied artwork in window chrome as well as desktop shortcuts.
   const iconFiles = {about:'about_me',projects:'my_projects',skills:'toolbox',experience:'my_story',resume:'resume',contact:'say_hi',jarvis:'jarvis','project-jarvis':'jarvis','project-game':'my_projects','project-nightcrawler':'my_projects','project-academy':'my_projects'};
@@ -38,24 +53,116 @@
     icon.src = `assets/icons/game_icon_${iconFiles[name]}.png`;
     parent.replaceChildren(icon, document.createTextNode(appNames[name]));
   }
+  function loadYouTube() {
+    if (window.YT?.Player) return Promise.resolve(window.YT);
+    if (!youtubeLoad) youtubeLoad = new Promise((resolve,reject) => {
+      const script = document.createElement('script'); script.src='https://www.youtube.com/iframe_api';
+      const timer=setTimeout(()=>reject(new Error('Player unavailable')),12000);
+      window.onYouTubeIframeAPIReady=()=>{clearTimeout(timer);resolve(window.YT);};
+      script.onerror=()=>{clearTimeout(timer);reject(new Error('Player unavailable'));};document.head.appendChild(script);
+    });
+    return youtubeLoad;
+  }
+  function stopMusic() {
+    musicGeneration++;
+    musicAudio.pause();
+    musicPlaying = false;
+    musicPanel.hidden = true;
+    musicVolumeToggle.setAttribute('aria-expanded', 'false');
+    musicVolumeToggle.setAttribute('aria-label', 'Show music volume controls');
+    musicToggle.setAttribute('aria-pressed', 'false');
+    musicToggle.setAttribute('aria-label', 'Turn background music on');
+    musicToggle.querySelector('.music-label').textContent = 'music off';
+  }
+  function hideMusicPanel(restoreFocus = false) {
+    musicPanel.hidden = true;
+    musicVolumeToggle.setAttribute('aria-expanded', 'false');
+    musicVolumeToggle.setAttribute('aria-label', 'Show music volume controls');
+    if (restoreFocus) musicVolumeToggle.focus({ preventScroll: true });
+  }
+  function startMusic() {
+    if (monitorStage.dataset.power !== 'on') return;
+    const generation = ++musicGeneration;
+    musicStatus.textContent = '';
+    musicAudio.volume = musicVolume / 100;
+    musicAudio.currentTime = 0;
+    musicAudio.play().catch(() => {
+      if (generation !== musicGeneration) return;
+      musicPlaying = false;
+      musicToggle.setAttribute('aria-pressed', 'false');
+      musicToggle.querySelector('.music-label').textContent = 'music paused';
+      musicStatus.textContent = 'The audio could not play. Try the player controls.';
+      musicPanel.hidden = false;
+      musicVolumeToggle.setAttribute('aria-expanded', 'true');
+      musicVolumeToggle.setAttribute('aria-label', 'Hide music volume controls');
+    });
+  }
+  musicVolumeControl.addEventListener('input', () => {
+    musicVolume = musicVolumeControl.valueAsNumber;
+    musicVolumeValue.value = `${musicVolume}%`;
+    musicAudio.volume = musicVolume / 100;
+  });
+  musicAudio.addEventListener('play', () => {
+    musicPlaying = true;
+    musicToggle.setAttribute('aria-pressed', 'true');
+    musicToggle.setAttribute('aria-label', 'Turn background music off');
+    musicToggle.querySelector('.music-label').textContent = 'music on';
+    musicStatus.textContent = '';
+    opened.get('project-game')?.videoPlayer?.pauseVideo?.();
+  });
+  musicAudio.addEventListener('pause', () => {
+    musicPlaying = false;
+    musicToggle.setAttribute('aria-pressed', 'false');
+    musicToggle.setAttribute('aria-label', 'Turn background music on');
+    musicToggle.querySelector('.music-label').textContent = 'music off';
+  });
+  musicVolumeToggle.addEventListener('click', () => {
+    musicPanel.hidden = !musicPanel.hidden;
+    musicVolumeToggle.setAttribute('aria-expanded', String(!musicPanel.hidden));
+    musicVolumeToggle.setAttribute('aria-label', `${musicPanel.hidden ? 'Show' : 'Hide'} music volume controls`);
+  });
+  musicAudio.addEventListener('error', () => {
+    musicStatus.textContent = 'The background music file could not be loaded.';
+    musicPanel.hidden = false;
+    musicVolumeToggle.setAttribute('aria-expanded', 'true');
+    musicVolumeToggle.setAttribute('aria-label', 'Hide music volume controls');
+  });
+  function setMonitorPower(poweredOn) {
+    monitorStage.dataset.power = poweredOn ? 'on' : 'off';
+    monitorLive.inert = !poweredOn;
+    monitorLive.setAttribute('aria-hidden', String(!poweredOn));
+    powerToggle.setAttribute('aria-pressed', String(poweredOn));
+    powerToggle.setAttribute('aria-label', `Power ${poweredOn ? 'off' : 'on'} monitor`);
+    powerLabel.textContent = poweredOn ? 'POWER OFF' : 'POWER ON';
+    monitorStatus.textContent = poweredOn ? 'SYSTEM ONLINE' : 'SYSTEM OFFLINE';
+    if (poweredOn) {
+      startMusic();
+      document.getElementById('homeTitle').focus({ preventScroll: true });
+    } else {
+      stopMusic();
+      opened.get('project-game')?.videoPlayer?.pauseVideo?.();
+      powerToggle.focus({ preventScroll: true });
+    }
+  }
+  powerToggle.addEventListener('click', () => setMonitorPower(monitorStage.dataset.power !== 'on'));
+  musicToggle.addEventListener('click', () => musicPlaying ? stopMusic() : startMusic());
+  document.getElementById('musicClose').addEventListener('click', () => {
+    hideMusicPanel(true);
+  });
+  musicPanel.addEventListener('keydown', event => {
+    if (event.key === 'Escape') { event.stopPropagation(); hideMusicPanel(true); }
+  });
   function setupVideo(el) {
     const frame = el.querySelector('.youtube-player');
     const help = el.querySelector('.video-help');
     const state = document.createElement('span'); state.className = 'video-state'; state.setAttribute('role','status'); help.prepend(state);
     if (!/^https?:$/.test(location.protocol)) { state.textContent = 'Embedded playback needs a local web server or hosted website. '; return; }
     const url = new URL(frame.src); url.searchParams.set('origin',location.origin); url.searchParams.set('enablejsapi','1'); frame.src=url.href;
-    if (!youtubeLoad) youtubeLoad = new Promise((resolve,reject) => {
-      if (window.YT?.Player) { resolve(window.YT); return; }
-      const script = document.createElement('script'); script.src='https://www.youtube.com/iframe_api';
-      const timer=setTimeout(()=>reject(new Error('Player unavailable')),12000);
-      window.onYouTubeIframeAPIReady=()=>{clearTimeout(timer);resolve(window.YT);};
-      script.onerror=()=>{clearTimeout(timer);reject(new Error('Player unavailable'));};document.head.appendChild(script);
-    });
-    youtubeLoad.then(YT=>{
+    loadYouTube().then(YT=>{
       if (!el.isConnected) return;
       el.videoPlayer = new YT.Player(frame,{events:{
         onReady:()=>{state.textContent='Press play to watch the trailer. ';},
-        onStateChange:event=>{if(event.data===1)state.textContent='Trailer playing. ';},
+        onStateChange:event=>{if(event.data===1){state.textContent='Trailer playing. ';stopMusic();}},
         onError:event=>{const errors={100:'This video is unavailable or private.',101:'The video owner has disabled embedding.',150:'The video owner has disabled embedding.',153:'YouTube could not identify this page. Try opening the portfolio from its hosted URL.',5:'Your browser could not play this video.'};state.textContent=(errors[event.data]||'The embedded player could not play this video.')+' ';}
       }});
     }).catch(()=>{if(el.isConnected)state.textContent='The YouTube player could not connect. Use the original video link below. ';});
@@ -311,24 +418,6 @@
     };
     form.addEventListener('submit', event => { event.preventDefault(); sendMessage(input.value); input.value = ''; });
     windowEl.querySelectorAll('[data-question]').forEach(button => button.addEventListener('click', () => sendMessage(button.dataset.question)));
-  }
-  // Short, skippable startup; visitors who prefer reduced motion enter immediately.
-  const boot = document.getElementById('bootScreen');
-  let bootTimer;
-  function enterDesktop() {
-    clearTimeout(bootTimer); boot.hidden = true;
-    document.querySelectorAll('body > header, body > main, body > footer').forEach(el => el.inert = false);
-    document.getElementById('homeTitle').focus({ preventScroll: true });
-    try { sessionStorage.setItem('drizzlehaven-booted','1'); } catch (_) {}
-  }
-  let hasBooted = false;
-  try { hasBooted = sessionStorage.getItem('drizzlehaven-booted') === '1'; } catch (_) {}
-  if (!hasBooted && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    boot.hidden = false;
-    document.querySelectorAll('body > header, body > main, body > footer').forEach(el => el.inert = true);
-    const skip = document.getElementById('skipBoot'); skip.addEventListener('click',enterDesktop); skip.focus();
-    boot.addEventListener('keydown', event => { if(event.key === 'Escape') {event.stopPropagation();enterDesktop();} if(event.key === 'Tab'){event.preventDefault();skip.focus();} });
-    bootTimer = setTimeout(enterDesktop,1600);
   }
   window.addEventListener('resize', () => {
     if (isMobile()) return;
