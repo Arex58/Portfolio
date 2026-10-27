@@ -43,13 +43,13 @@ if archive.exists():
     with zipfile.ZipFile(archive) as z:
         for name in z.namelist():
             if name.endswith('.png'):assert z.read(name)==(root/'assets/icons'/name).read_bytes(), 'Modified supplied icon '+name
-for p in ['script.js','styles.css','cozy.css','assets/portfolio.css']:
+for p in ['script.js','room.js','styles.css','cozy.css','workstation.css','assets/portfolio.css']:
     with urlopen(base+p) as r:
         assert r.status==200
         r.read()
-for p in ['styles.css','cozy.css','assets/portfolio.css']:
+for p in ['styles.css','cozy.css','workstation.css','assets/portfolio.css']:
     s=(root/p).read_text(encoding='utf-8');assert s.count('{')==s.count('}'),p
-for p in ['index.html','script.js','cozy.css']:
+for p in ['index.html','script.js','room.js','cozy.css','workstation.css']:
     s=(root/p).read_text(encoding='utf-8');assert '\ufffd' not in s, 'Invalid encoding in '+p
 print(f'PASS: {len(c.assets)} local assets return HTTP 200; {len(c.opens)} launch targets resolve; {len(c.images)} images have alt attributes; IDs unique; CSS braces balanced; UTF-8 intact.')
 compiled=(root/'assets/portfolio.css').read_text(encoding='utf-8')

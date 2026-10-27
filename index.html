@@ -3,40 +3,53 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#151C23">
+  <meta name="theme-color" content="#29263e">
   <meta name="description" content="I'm Alejandro Pena, a developer and taekwondo instructor in Los Angeles. Explore my Unity fighting game, academy website, and projects in progress.">
-  <title>Alejandro Pena · DrizzleHaven Studio</title>
+  <title>Alejandro Peña · DrizzleHaven Studio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=VT323&display=swap" rel="stylesheet">
   <link rel="icon" type="image/svg+xml" href="assets/drizzlehaven.svg">
   <link rel="stylesheet" href="assets/portfolio.css">
   <script src="script.js" defer></script>
+  <script src="room.js" defer></script>
 </head>
 <body data-theme="night">
 <a class="skip-link" href="#powerToggle">Skip to the monitor power button</a>
 
 <div class="monitor-stage" id="monitorStage" data-power="off">
+  <header class="room-heading"><a href="index.html" aria-label="DrizzleHaven home">DRIZZLE<span>HAVEN</span><i aria-hidden="true">✦</i></a><span>A SMALL WORLD BY ALEJANDRO PEÑA</span></header>
+  <div class="room-environment" aria-hidden="true">
+    <div class="city-window"><canvas id="cityCanvas" width="640" height="280"></canvas><div class="window-mullion"></div><div class="window-sill"></div><div class="window-reflection"></div></div>
+    <div class="wall-print"><span>TAKE YOUR<br>TIME.</span><i>☁</i><small>GOOD THINGS GROW.</small></div>
+    <div class="room-shelf"><span class="shelf-book"></span><span class="shelf-book"></span><span class="shelf-book"></span><span class="shelf-plant"></span></div>
+  </div>
+  <p class="room-caption"><span></span> RAIN OUTSIDE. IDEAS INSIDE.</p>
+  <div class="workstation">
+  <div class="desk-surface" aria-hidden="true"></div>
+  <svg class="desk-lamp" viewBox="0 0 80 140" aria-hidden="true" shape-rendering="crispEdges"><path fill="#19182f" d="M14 132h52v7H14zM35 60h7v72h-7zM34 58h8V26h-8z"/><path fill="#a16b7c" d="M37 66h3v62h-3zM20 129h40v4H20z"/><path fill="#603a58" d="M25 10h27v5h5v9h5v10h5v13H9V34h5V24h5v-9h6z"/><path fill="#dfa17f" d="M26 13h24v6h5v12h5v10H16V31h5V19h5z"/><path fill="#f7d894" d="M13 41h51v6H13zM26 47h26v5H26z"/><path fill="#f2bd8b" opacity=".08" d="M18 52h41l20 71H0z"/></svg>
   <div class="monitor-shell">
     <div class="monitor-bezel">
       <section class="monitor-screen" id="monitorScreen" aria-label="DrizzleHaven computer monitor">
         <div class="monitor-off" id="monitorOff">
           <div class="monitor-off-mark" aria-hidden="true">DH<span>_</span></div>
-          <p>DRIZZLEHAVEN / 8BIT-OS</p>
-          <h1>DISPLAY OFF</h1>
-          <span>PRESS THE POWER BUTTON TO START</span>
+          <p>YOUR RAINY-EVENING HIDEAWAY</p>
+          <h1>Make yourself at home.</h1>
+          <span>PRESS THE YELLOW POWER BUTTON BELOW</span>
         </div>
+        <div class="boot-screen" id="bootScreen" hidden><span class="boot-emblem" aria-hidden="true">DH<span>_</span></span><strong>DrizzleHaven</strong><p id="bootMessage" role="status">Waking up a little world…</p><div class="boot-progress" aria-hidden="true"><span></span></div><button type="button" id="skipBoot">Skip startup ↵</button></div>
         <div class="monitor-live" id="monitorLive" aria-hidden="true" inert>
 <main class="desktop" id="desktop">
-  <div class="wallpaper" aria-hidden="true"><div class="room-glow"></div><div class="rain-pane"></div></div>
+  <div class="wallpaper" aria-hidden="true"></div>
+  <div class="os-menubar"><span><b aria-hidden="true">✦</b> DRIZZLEHAVEN / OS</span><span>PERSONAL SPACE, SHARED WITH YOU.</span></div>
   <div class="desktop-content">
     <section class="hello-panel" aria-labelledby="homeTitle">
       <p class="studio-tagline dh:font-display">Where ideas find their home.</p>
-      <h1 id="homeTitle" tabindex="-1">Alejandro Pena<span>Developer, maker.<br>You can call me <em>Alex.</em></span></h1>
+      <h1 id="homeTitle" tabindex="-1">Alejandro Peña<span>Developer, maker.<br>You can call me <em>Alex.</em></span></h1>
       <p class="intro-copy">I build websites and games, and I teach taekwondo.<br>One of my projects brings those interests together: a 3D taekwondo fighting game I made in Unity.</p>
       <div class="quick-actions"><button type="button" class="pill pill-dark" data-open="projects">See what I've made <span aria-hidden="true">↗</span></button><button type="button" class="pill pill-paper" data-open="contact">Get in touch <span aria-hidden="true">↗</span></button></div>
     </section>
-    <aside class="desk-scene" aria-label="An illustrated rainy-day workspace: code on a monitor, a warm drink, and a desk lamp"><img src="assets/rainy-desk-pixel.png" alt="" width="180" height="125"></aside>
+    <aside class="desktop-terminal" aria-label="Portfolio directory"><div class="terminal-title"><span>hello_world.txt</span><span aria-hidden="true">− □</span></div><div class="terminal-body"><p><span>~/alex</span> $ whoami</p><p>Developer.<br>Taekwondo instructor.<br>Always making something.</p><p class="terminal-comment">// Los Angeles, CA<br>// A little curiosity goes a long way.</p><button type="button" data-open="projects">Explore my projects <span aria-hidden="true">↗</span></button><span class="terminal-cursor" aria-hidden="true">_</span></div></aside>
     
     <section class="workspace-shelf" aria-label="Desktop applications">
     <div class="desktop-shortcuts">
@@ -74,7 +87,7 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </div>
       </section>
-      <div class="monitor-bezel-label"><span>DRIZZLEHAVEN / CRT-08</span><span class="monitor-led" id="monitorLed" aria-hidden="true"></span></div>
+      <div class="monitor-bezel-label"><span><i aria-hidden="true">▦</i> DRIZZLEHAVEN <small>PERSONAL COMPUTER</small></span><span class="monitor-led" id="monitorLed" aria-hidden="true"></span></div>
     </div>
     <div class="monitor-neck" aria-hidden="true"></div>
     <div class="monitor-base">
@@ -86,6 +99,13 @@
       <span class="monitor-status" id="monitorStatus" role="status" aria-live="polite">SYSTEM OFFLINE</span>
     </div>
   </div>
+  <div class="desk-foreground">
+    <div class="coffee-corner" aria-hidden="true"><span class="coffee-steam"></span><svg viewBox="0 0 52 50" shape-rendering="crispEdges"><path fill="#21192f" d="M3 39h45v5H3zM9 12h30v25h-5v4H14v-4H9zM39 16h9v17h-9z"/><path fill="#90c7bb" d="M12 16h24v19h-4v3H16v-3h-4zM39 19h5v10h-5z"/><path fill="#c0e0c4" d="M12 12h24v4H12zM12 16h4v15h-4z"/><path fill="#593a42" d="M16 12h16v4H16z"/><path fill="#eab39b" d="M22 22h7v3h3v5h-3v3h-7v-3h-3v-5h3z"/></svg><span class="coffee-note">ONE MORE LITTLE IDEA.</span></div>
+    <div class="keyboard-area" aria-hidden="true"><div class="retro-keyboard"><div class="keyboard-keys"></div><div class="keyboard-bottom"><i></i><i></i><i></i></div></div><div class="retro-mouse"><i></i></div></div>
+    <div class="smokey-area" id="smokeyArea"><div class="cat-cushion" aria-hidden="true"></div><button type="button" class="smokey" id="smokey" aria-label="Pet Smokey, my fluffy gray cat" data-state="idle"><canvas id="smokeyCanvas" width="96" height="72" aria-hidden="true"></canvas></button><span class="smokey-bubble" id="smokeyBubble" role="status" aria-live="polite"></span><span class="smokey-name">SMOKEY <span>·</span> DESK SUPERVISOR</span></div>
+  </div>
+  </div>
+  <footer class="room-footer"><span>BUILT WITH CURIOSITY. BEST ENJOYED SLOWLY.</span><button type="button" id="motionToggle" aria-pressed="false">Pause room motion</button><span>LOS ANGELES, CA <i aria-hidden="true">✦</i></span></footer>
 </div>
 
 <template id="tpl-about"><div class="inside about-inside">

@@ -1,6 +1,8 @@
 ﻿# DrizzleHaven Studio
 
-Alejandro Pena's personal desktop portfolio. **Where ideas find their home.**
+Alejandro Peña's personal desktop portfolio. **Where ideas find their home.**
+
+A pastel pixel-art computer in a rainy nighttime room, with an original animated Smokey companion based on her photographs. The real portfolio runs inside the computer display. The city, rain, lamp, coffee, keyboard, mouse, and Smokey live outside it.
 
 The existing HTML templates, vanilla JavaScript window manager, projects, supplied artwork, resume, and links remain in place. Tailwind CSS v4 is a build-time dependency; the published site needs no Node server or browser CDN.
 
@@ -29,7 +31,7 @@ npm run test:assets
 npm test
 ```
 
-`npm run build` generates minified local CSS. **Commit `assets/portfolio.css` with every source/style change.** It is deliberately not ignored: GitHub Pages publishing from a branch does not run npm automatically. Keep `index.html`, the compiled CSS, `script.js`, `assets/`, `Photos/`, and `.nojekyll` in the publishing branch's root. Configure Pages to publish from that branch and root folder.
+`npm run build` generates minified local CSS. **Commit `assets/portfolio.css` with every source/style change.** It is deliberately not ignored: GitHub Pages publishing from a branch does not run npm automatically. Keep `index.html`, the compiled CSS, `script.js`, `room.js`, `assets/`, `Photos/`, and `.nojekyll` in the publishing branch's root. Configure Pages to publish from that branch and root folder.
 
 All local document, stylesheet, script, and image references are relative, including the CSS rain texture. The site works at `/Portfolio/` without a framework router or base-URL rewrite. To preview that exact path, stop the regular preview server and run:
 
@@ -46,16 +48,18 @@ Then open http://127.0.0.1:8000/Portfolio/. The browser tests automatically star
 | `css/tailwind.css` | CSS entry, brand palette, font families, spacing, radii, shadows, explicit source scanning |
 | `styles.css` | Retained desktop and application layout rules |
 | `cozy.css` | Semantic day/night colors, DrizzleHaven styling, rain, image framing, responsive and container rules |
+| `workstation.css` | Current pixel room, computer casing, desk props, screen hierarchy, responsive layouts |
+| `room.js` | Original canvas city and Smokey artwork, rain rendering, cat state machine, motion controls |
 | `assets/portfolio.css` | Generated stylesheet loaded by the page; include in commits |
 | `index.html` | Existing content and application templates, new studio identity |
 | `script.js` | Boot, app launcher, drag/resize, taskbar, themes, audio, JARVIS mini, trailer handling |
 | `assets/drizzlehaven.svg` | Custom cloud-and-home studio mark and favicon |
 | `assets/rain-streaks.svg` | Small repeating SVG rain texture |
-| `assets/rainy-desk.svg` | Existing illustrated desk, recolored for the overcast palette |
-| `playwright.config.js`, `tests/desktop.spec.js` | Browser regression checks and screenshots |
+| `assets/rainy-desk.svg`, `assets/rainy-desk-pixel.png` | Legacy assets; no longer shown in the portfolio |
+| `playwright.config.js`, `tests/desktop.spec.js`, `tests/room.spec.js` | Browser regression checks, scene behavior tests, and screenshots |
 | `tests/check_assets.py` | Self-contained asset, template, encoding, and subdirectory checks |
 
-The palette is midnight `#151C23`, slate `#263440`, mist `#8FAAB9`, cloud `#C7D0D5`, amber `#D6AC78`, and cream `#ECE8DF`. Semantic roles provide contrasting day/night surfaces. Existing custom CSS uses the same theme variables as new utilities.
+The workstation uses peach `#efaf99`, dusty pink `#d28c91`, purple `#80547c`, mint `#a9cfc0`, and yellow `#f1d38f`, with dark stepped outlines. Semantic roles provide contrasting night and warm screen palettes. Original artwork uses integer canvas coordinates and nearest-neighbor display scaling.
 
 Tailwind is introduced incrementally: `dh:` prefixed utilities avoid collisions with old classes, and Preflight is omitted to preserve existing element defaults. The legacy styles sit in the components layer. Custom rain animation and window behavior remain ordinary CSS/JavaScript. See the official [CLI installation](https://tailwindcss.com/docs/installation/tailwind-cli) and [disabling Preflight](https://tailwindcss.com/docs/preflight#disabling-preflight) documentation.
 
@@ -68,8 +72,11 @@ Dependencies: `tailwindcss` 4.3.3, `@tailwindcss/cli` 4.3.3, and `@playwright/te
 - Drag the lower-right resize grip, or focus it and use the arrow keys.
 - **Escape** closes the top window and restores focus. Taskbar buttons restore minimized apps.
 - Mobile uses full-screen application sheets with internal scrolling.
-- Boot is skippable, runs once per tab session, and is bypassed for reduced motion. Rain and hover motion also stop for reduced motion; rain pauses in background tabs.
-- Day/night preference is saved locally. Interface sound is opt-in and off by default.
+- Press the physical yellow power button to start. The 1.7-second boot can be skipped; subsequent boots in the tab take 450ms. Reduced motion loads in 100ms with no flicker. Power off cancels startup and stops audio.
+- Day/night preference is saved locally. Music and interface sounds are independently opt-in and off by default; powering on never starts audio.
+- Pet Smokey with click, tap, Enter, or Space. She blinks, looks around, walks, rests, and occasionally hops onto her cushion. Every eleventh greeting briefly reveals her tongue-out expression.
+- Her walking and jumping stay in a safe desk area below the computer. Mobile keeps her stationary, with idle, looking, and sleeping poses.
+- Pause room motion with the footer control. System reduced motion also stops rain, steam, and character movement. Hidden tabs cancel the scene's animation frame loop; visible animation is capped at 20fps.
 
 All seven supplied app icons and project images remain intact. Project images use contain framing. JARVIS mini remains a scripted navigation guide, separate from the in-progress Windows assistant. No experience, project features, or achievements were added.
 

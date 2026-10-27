@@ -127,7 +127,37 @@
     musicVolumeToggle.setAttribute('aria-expanded', 'true');
     musicVolumeToggle.setAttribute('aria-label', 'Hide music volume controls');
   });
+  const bootScreen = document.getElementById('bootScreen');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let bootTimer;
+  let bootMessageTimer;
+  function finishBoot() {
+    if (monitorStage.dataset.power !== 'booting') return;
+    clearTimeout(bootTimer);
+    clearTimeout(bootMessageTimer);
+    bootScreen.hidden = true;
+    setMonitorPower(true);
+    try { sessionStorage.setItem('drizzlehaven-booted', 'true'); } catch (_) {}
+  }
+  function startBoot() {
+    monitorStage.dataset.power = 'booting';
+    bootScreen.hidden = false;
+    document.getElementById('bootMessage').textContent = 'Waking up a little world…';
+    monitorStatus.textContent = 'BOOTING…';
+    powerToggle.setAttribute('aria-label', 'Power off monitor');
+    powerToggle.setAttribute('aria-pressed', 'true');
+    powerLabel.textContent = 'POWER OFF';
+    document.getElementById('skipBoot').focus({ preventScroll: true });
+    document.dispatchEvent(new CustomEvent('drizzlehaven:power'));
+    let returning = false;
+    try { returning = sessionStorage.getItem('drizzlehaven-booted') === 'true'; } catch (_) {}
+    bootMessageTimer = setTimeout(() => { document.getElementById('bootMessage').textContent = 'Projects ready. Curiosity loaded.'; }, 650);
+    bootTimer = setTimeout(finishBoot, reducedMotion.matches ? 100 : returning ? 450 : 1700);
+  }
   function setMonitorPower(poweredOn) {
+    clearTimeout(bootTimer);
+    clearTimeout(bootMessageTimer);
+    bootScreen.hidden = true;
     monitorStage.dataset.power = poweredOn ? 'on' : 'off';
     monitorLive.inert = !poweredOn;
     monitorLive.setAttribute('aria-hidden', String(!poweredOn));
@@ -136,7 +166,6 @@
     powerLabel.textContent = poweredOn ? 'POWER OFF' : 'POWER ON';
     monitorStatus.textContent = poweredOn ? 'SYSTEM ONLINE' : 'SYSTEM OFFLINE';
     if (poweredOn) {
-      startMusic();
       document.getElementById('homeTitle').focus({ preventScroll: true });
     } else {
       stopMusic();
@@ -144,7 +173,8 @@
       powerToggle.focus({ preventScroll: true });
     }
   }
-  powerToggle.addEventListener('click', () => setMonitorPower(monitorStage.dataset.power !== 'on'));
+  powerToggle.addEventListener('click', () => monitorStage.dataset.power === 'off' ? startBoot() : setMonitorPower(false));
+  document.getElementById('skipBoot').addEventListener('click', finishBoot);
   musicToggle.addEventListener('click', () => musicPlaying ? stopMusic() : startMusic());
   document.getElementById('musicClose').addEventListener('click', () => {
     hideMusicPanel(true);

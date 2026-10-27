@@ -30,13 +30,11 @@ for (const viewport of [{ width: 1440, height: 1000 }, { width: 1024, height: 76
     await enter(page);
     await assertFits(page, page.locator('body'));
     await assertFits(page, page.locator('.taskbar'));
-    await expect(page.locator('.desk-scene img')).toHaveAttribute('src', 'assets/rainy-desk-pixel.png');
-    await expect(page.locator('.desk-scene img')).toHaveCSS('image-rendering', 'pixelated');
-    await expect(page.locator('.menubar, .annotation, .scene-caption, .shelf-label')).toHaveCount(0);
-    const rain = await page.locator('.rain-pane').boundingBox();
-    const desktop = await page.locator('#desktop').boundingBox();
-    expect(rain.width).toBeCloseTo(desktop.width, 0);
-    expect(rain.height).toBeCloseTo(desktop.height, 0);
+    await expect(page.locator('.desk-scene, .rain-pane')).toHaveCount(0);
+    await expect(page.locator('#cityCanvas')).toHaveCSS('image-rendering', 'pixelated');
+    await expect(page.locator('#smokeyCanvas')).toHaveCSS('image-rendering', 'pixelated');
+    await expect(page.locator('#monitorScreen #cityCanvas')).toHaveCount(0);
+    await assertFits(page, page.locator('#smokey'));
     for (const app of ['about', 'projects', 'skills', 'experience', 'resume', 'jarvis', 'contact']) {
       const win = await launch(page, app);
       await expect(win).toBeVisible();
@@ -75,7 +73,7 @@ test('monitor power, desktop controls, drag, resize, keyboard movement, and focu
   await page.locator('#powerToggle').click();
   await expect(page.locator('#monitorStage')).toHaveAttribute('data-power', 'on');
   await expect(page.locator('#monitorLive')).not.toHaveAttribute('inert', '');
-  await expect(page.locator('#musicToggle')).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('#musicToggle')).toHaveAttribute('aria-pressed', 'false');
   await expect(page.locator('#homeTitle')).toBeFocused();
   const win = await launch(page, 'projects');
   const before = await win.boundingBox();
@@ -139,6 +137,9 @@ test('music is opt-in, reflects player state, stops on close, and fits on mobile
   await enter(page);
   const toggle = page.locator('#musicToggle');
   const audio = page.locator('#backgroundMusic');
+  await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+  expect(await page.evaluate(() => window.musicTest.plays)).toBe(0);
+  await toggle.click();
   await expect(toggle).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('#musicPanel')).toBeHidden();
   await page.locator('#musicVolumeToggle').click();
@@ -222,7 +223,9 @@ test('reduced motion keeps the monitor powerable and removes rain/shortcut anima
   await page.keyboard.press('Tab');
   await expect(page.locator('.skip-link')).toBeFocused();
   await page.locator('#powerToggle').click();
-  expect(await page.locator('.rain-pane').evaluate(el => getComputedStyle(el, '::after').animationName)).toBe('none');
+  await expect(page.locator('#monitorStage')).toHaveAttribute('data-power', 'on');
+  await expect(page.locator('#motionToggle')).toHaveText('Reduced motion on');
+  expect(await page.locator('.coffee-steam').evaluate(el => getComputedStyle(el).animationName)).toBe('none');
   const shortcut = page.locator('.shortcut').first();
   await shortcut.hover();
   await expect(shortcut.locator('img')).toHaveCSS('transform', 'none');

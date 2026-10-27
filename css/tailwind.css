@@ -5,6 +5,7 @@
 @import "tailwindcss/utilities.css" layer(utilities) prefix(dh) source(none);
 @import "../styles.css" layer(components);
 @import "../cozy.css" layer(components);
+@import "../workstation.css" layer(components);
 @source "../index.html";
 @source "../script.js";
 

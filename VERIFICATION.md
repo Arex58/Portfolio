@@ -1,36 +1,50 @@
-﻿# Verification - DrizzleHaven redesign
+﻿# Verification — DrizzleHaven pixel-art workstation
 
-Executed October 26, 2026 in the existing repository. No project facts, resume contents, supplied raster artwork, or external destinations were changed.
+Verified October 27, 2026 in the existing repository. Changes are local; no commit, push, or deployment was performed.
 
-## Build and assets
+## Delivered
 
-- npm registry resolved the current stable Tailwind CSS and official CLI to **4.3.3**. Both are pinned; the dependency tree is locked in `package-lock.json`.
-- `npm run dev`: official CLI started successfully and rebuilt the local stylesheet while watching. Watch process stopped after verification.
-- `npm run build`: passed; minified output is `assets/portfolio.css` (about 41 KB), ready to include in the publishing branch.
-- `npm run check`: JavaScript syntax passed.
-- `npm run test:assets`: passed. 17 HTML-referenced local assets returned HTTP 200, 19 launch targets resolved, 22 images had alt attributes, IDs were unique, CSS braces balanced, and UTF-8 was intact. Compiled CSS texture paths also returned HTTP 200 under the project subdirectory.
-- No Tailwind browser CDN or Preflight import. Utilities use the `dh:` prefix and explicit HTML/JS source scanning.
-- `git -c core.whitespace=cr-at-eol diff --check`: passed, respecting the repository's CRLF files.
+- `index.html`: layered room markup, physical computer, boot overlay, functional terminal panel, desk props, accessible Smokey and motion controls. Removed the white-background desk illustration from the interface.
+- `workstation.css`: pastel pixel computer, window/desk composition, readable OS layout, scanlines, responsive screen and app layouts, theme colors, focus styles, steam and boot effects.
+- `room.js`: original integer-coordinate canvas skyline and transparent Smokey character; rain, window trails, slow building-light changes, reflections, blink/ear/tail details, looking, walking, sleeping/breathing, cushion jumps, pet reactions, and rare tongue-out greeting.
+- `script.js`: short cancellable/skippable startup, faster return visits, reduced-motion startup, focus handling, and explicitly opt-in music.
+- `css/tailwind.css`, `assets/portfolio.css`: existing Tailwind build retained and compiled with the new stylesheet.
+- `package.json`, browser tests, asset checks, and README updated for the new source files and interactions.
 
-## Browser verification
+## Checks completed
 
-Nine Playwright tests passed in installed Chrome. The test server serves `/Portfolio/` from the repository's parent, matching the GitHub Pages prefix.
+- `npm run build`: passed; compiled stylesheet is about 72 KB, with no new dependencies.
+- `npm run check`: both JavaScript files passed syntax checks.
+- `npm run test:assets`: passed. All 19 HTML-referenced local assets returned HTTP 200; 17 launch targets resolved; 19 images had alt attributes; IDs were unique; CSS braces and UTF-8 were valid. Compiled CSS URLs resolved under `/Portfolio/`.
+- `npm test`: **16 passed** in installed Chrome, using the existing Playwright setup and `/Portfolio/` server path.
+- Compared all 11 original HTML content templates with Git HEAD, normalizing only line endings: unchanged. Existing résumé, project artwork, seven application icons, contact details, and external destinations were retained.
 
-Viewports: **1440 x 1000**, **1024 x 768**, **768 x 1024**, **390 x 844**, **320 x 740**.
+Browser checks covered:
 
-- Opened and closed all seven desktop apps and all four project details at every viewport; checked the page, taskbar, and window content for horizontal overflow. No page JavaScript errors occurred.
-- Tested startup skip, Escape, focus restoration, titlebar dragging, pointer resizing, keyboard resizing, Alt+Shift+Arrow movement, minimize/restore, and maximize/restore.
-- Confirmed all seven apps still fit when resized to 340px wide, including day mode. Container rules adapt content to the window width.
-- Tested JARVIS mini submitting a query and opening Projects; checked contact mail link, actual clipboard copy, and resume PDF response/content type.
-- Tested theme persistence after reload and sound-toggle state. Audio hardware output was not assessed.
-- Tested reduced-motion boot bypass, stopped rain animation, no shortcut transform, and keyboard skip-link focus.
-- Inspected screenshots of desktop, tablet, narrow mobile, project explorer, contact, and day/night layouts. Mobile header remains visible during scrolling. Project images use `object-fit: contain`.
-- Animation uses a small repeating SVG and transform-only motion; it pauses in hidden tabs. No formal frame-rate or performance benchmark was run.
+- All seven apps and four project detail windows at 1440×1000, 1024×768, 768×1024, 390×844, and 320×740; no horizontal overflow or page JavaScript errors.
+- Power-on, power-off, startup skip and cancellation, inert off-screen controls, and keyboard focus.
+- Window drag, resize, keyboard move/resize, maximize, minimize, restore, close, and focus restoration.
+- Day/warm palette persistence and narrow 340px app windows.
+- Opt-in local music, volume, playback-state UI, and stopping audio on power-off. Playback was mocked for deterministic state tests; speaker output was not evaluated.
+- JARVIS guide navigation, contact mail URL, clipboard copy, résumé URL and PDF content type.
+- Smokey keyboard interaction and tongue-out greeting, safe walking bounds, a raised cushion jump, sleeping, and simplified stationary mobile behavior. Behavior tests use a virtual clock and controlled randomness; production behavior remains randomized.
+- Pause/resume and live reduced-motion preference changes in both directions, including canvas pixel stability while paused.
+- Mobile introduction and actions remain available.
 
-Screenshots are in ignored `test-results/`, regenerated by `npm test`. Full-page mobile screenshots show the fixed taskbar at the viewport bottom, which can appear partway through a tall full-page capture.
+Reviewed the generated desktop, tablet/mobile, project, and contact screenshots. The decorative desk overhang now uses `overflow: clip` so focusing portfolio windows cannot shift the room sideways. Added screen height to keep the introduction clear of the OS menubar.
 
-## External services and remaining issues
+## Animation and artwork
 
-An additional real-browser connection check loaded both DM Sans and Fraunces. The YouTube player API reported **"The video owner has disabled embedding."** Inline playback therefore could not succeed. The original trailer URL (`https://youtu.be/wflFSHQjeUA`) and permanent Watch on YouTube links are preserved, and the existing error handler explains the failure. The video owner must allow embedding in YouTube settings to enable inline playback; portfolio CSS cannot override that restriction.
+Room canvas drawing is limited to 20fps and uses a cached static city layer. Hidden tabs cancel the animation-frame loop and pause CSS effects. Paused/reduced-motion scenes stop scheduling frames after any brief interaction bubble finishes. Art is drawn in code with crisp pixel scaling; the user’s photographs are references, not displayed sprite images. No generated-image service or external artwork dependency was introduced.
 
-Chrome desktop and emulated viewport testing is complete. Physical phone, Safari, Firefox, actual mail-client launch, and final hosted GitHub Pages deployment were not exercised. The work is local and has not been committed, pushed, or published. Before branch publication, include the generated stylesheet with the source changes as documented in README.md.
+Smokey remains below the screen. Mobile disables roaming and jumps. The small cushion is the only raised destination; she has no route through the computer or portfolio content.
+
+## Remaining verification limits
+
+- Physical phones, Safari, Firefox, audio hardware, and actual mail-client launching were not exercised.
+- YouTube playback and final hosted GitHub Pages deployment were not verified. The existing original-trailer links and player error fallback remain.
+- Google Fonts and YouTube still require network access; local fallback fonts are retained.
+- No formal device frame-rate or accessibility audit was performed.
+- The in-app browser preview surface was unavailable. Local Chrome screenshot and automated browser verification succeeded.
+
+Screenshots and traces are in ignored `test-results/`. Include the generated `assets/portfolio.css` and new `room.js` when publishing through the existing GitHub Pages workflow.
