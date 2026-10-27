@@ -1,4 +1,4 @@
-/* Original DrizzleHaven pixel artwork. Integer coordinates, one shared palette,
+/* Original Smokey's Studio pixel artwork. Integer coordinates, one shared palette,
    no image downloads. The room renders at 20 fps; inactive tabs do no work. */
 (() => {
   'use strict';

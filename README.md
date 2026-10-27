@@ -1,4 +1,4 @@
-﻿# DrizzleHaven Studio
+﻿# Smokey's Studio
 
 Alejandro Peña's personal desktop portfolio. **Where ideas find their home.**
 
@@ -47,7 +47,7 @@ Then open http://127.0.0.1:8000/Portfolio/. The browser tests automatically star
 | --- | --- |
 | `css/tailwind.css` | CSS entry, brand palette, font families, spacing, radii, shadows, explicit source scanning |
 | `styles.css` | Retained desktop and application layout rules |
-| `cozy.css` | Semantic day/night colors, DrizzleHaven styling, rain, image framing, responsive and container rules |
+| `cozy.css` | Semantic day/night colors, Smokey's Studio styling, rain, image framing, responsive and container rules |
 | `workstation.css` | Current pixel room, computer casing, desk props, screen hierarchy, responsive layouts |
 | `room.js` | Original canvas city and Smokey artwork, rain rendering, cat state machine, motion controls |
 | `assets/portfolio.css` | Generated stylesheet loaded by the page; include in commits |
@@ -73,12 +73,12 @@ Dependencies: `tailwindcss` 4.3.3, `@tailwindcss/cli` 4.3.3, and `@playwright/te
 - **Escape** closes the top window and restores focus. Taskbar buttons restore minimized apps.
 - Mobile uses full-screen application sheets with internal scrolling.
 - Press the physical yellow power button to start. The 1.7-second boot can be skipped; subsequent boots in the tab take 450ms. Reduced motion loads in 100ms with no flicker. Power off cancels startup and stops audio.
-- Day/night preference is saved locally. Music and interface sounds are independently opt-in and off by default; powering on never starts audio.
+- Day/night preference is saved locally. Background music starts at 30% volume with the monitor power button, loops, and stops on power-off. The taskbar music button can turn it off or retry blocked playback; interface sounds remain optional and off by default.
 - Pet Smokey with click, tap, Enter, or Space. She blinks, looks around, walks, rests, and occasionally hops onto her cushion. Every eleventh greeting briefly reveals her tongue-out expression.
 - Her walking and jumping stay in a safe desk area below the computer. Mobile keeps her stationary, with idle, looking, and sleeping poses.
 - Pause room motion with the footer control. System reduced motion also stops rain, steam, and character movement. Hidden tabs cancel the scene's animation frame loop; visible animation is capped at 20fps.
 
-All seven supplied app icons and project images remain intact. Project images use contain framing. JARVIS mini remains a scripted navigation guide, separate from the in-progress Windows assistant. No experience, project features, or achievements were added.
+The seven app icons use generated pixel artwork with shaded, recognizable objects. Project images remain intact. See `assets/icons/ARTWORK.md` for the icon prompts and provenance. Project images use contain framing. JARVIS mini remains a scripted navigation guide, separate from the in-progress Windows assistant. No experience, project features, or achievements were added.
 
 ## Tests and limits
 

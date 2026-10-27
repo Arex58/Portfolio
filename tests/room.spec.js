@@ -1,19 +1,22 @@
 const { test, expect } = require('@playwright/test');
 
-test('startup can be skipped, cancelled, and repeated without starting music', async ({ page }) => {
+test('startup plays music and can be skipped, cancelled, and repeated', async ({ page }) => {
   await page.goto('./');
   await page.locator('#powerToggle').click();
   await expect(page.locator('#monitorStage')).toHaveAttribute('data-power', 'booting');
+  await expect(page.locator('#backgroundMusic')).toHaveJSProperty('paused', false);
   await expect(page.locator('#monitorLive')).toHaveAttribute('inert', '');
   await expect(page.locator('#skipBoot')).toBeFocused();
   await page.keyboard.press('Enter');
   await expect(page.locator('#monitorStage')).toHaveAttribute('data-power', 'on');
   await expect(page.locator('#homeTitle')).toBeFocused();
+  await expect(page.locator('#backgroundMusic')).toHaveJSProperty('paused', false);
+  await page.locator('#powerToggle').click();
   await expect(page.locator('#backgroundMusic')).toHaveJSProperty('paused', true);
   await page.locator('#powerToggle').click();
   await page.locator('#powerToggle').click();
-  await page.locator('#powerToggle').click();
   await expect(page.locator('#monitorStage')).toHaveAttribute('data-power', 'off');
+  await expect(page.locator('#backgroundMusic')).toHaveJSProperty('paused', true);
   await page.waitForTimeout(1800);
   await expect(page.locator('#monitorLive')).toHaveAttribute('inert', '');
   await expect(page.locator('#bootScreen')).toBeHidden();

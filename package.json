@@ -1,8 +1,8 @@
 {
-  "name": "drizzlehaven-portfolio",
+  "name": "smokeys-studio-portfolio",
   "version": "1.0.0",
   "private": true,
-  "description": "DrizzleHaven Studio — Alejandro Pena's desktop portfolio",
+  "description": "Smokey's Studio — Alejandro Pena's desktop portfolio",
   "scripts": {
     "dev": "tailwindcss -i ./css/tailwind.css -o ./assets/portfolio.css --watch",
     "build": "tailwindcss -i ./css/tailwind.css -o ./assets/portfolio.css --minify",

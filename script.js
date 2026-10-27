@@ -1,4 +1,4 @@
-/* DrizzleHaven/OS: a tiny dependency-free desktop written in vanilla JavaScript.
+/* Smokey's Studio/OS: a tiny dependency-free desktop written in vanilla JavaScript.
    All portfolio content comes from local <template> elements in index.html.
    The JARVIS widget is a scripted site guide, NOT a live AI service. */
 (() => {
@@ -46,7 +46,7 @@
   let musicVolume = musicVolumeControl.valueAsNumber;
   let musicPlaying = false;
   const launchers = new Map();
-  // Reuse the supplied artwork in window chrome as well as desktop shortcuts.
+  // Share the pixel icons between window chrome and desktop shortcuts.
   const iconFiles = {about:'about_me',projects:'my_projects',skills:'toolbox',experience:'my_story',resume:'resume',contact:'say_hi',jarvis:'jarvis','project-jarvis':'jarvis','project-game':'my_projects','project-nightcrawler':'my_projects','project-academy':'my_projects'};
   function appLabel(parent, name) {
     const icon = document.createElement('img'); icon.alt = ''; icon.className = 'chrome-icon';
@@ -81,7 +81,7 @@
     if (restoreFocus) musicVolumeToggle.focus({ preventScroll: true });
   }
   function startMusic() {
-    if (monitorStage.dataset.power !== 'on') return;
+    if (monitorStage.dataset.power === 'off') return;
     const generation = ++musicGeneration;
     musicStatus.textContent = '';
     musicAudio.volume = musicVolume / 100;
@@ -90,8 +90,9 @@
       if (generation !== musicGeneration) return;
       musicPlaying = false;
       musicToggle.setAttribute('aria-pressed', 'false');
+      musicToggle.setAttribute('aria-label', 'Turn background music on');
       musicToggle.querySelector('.music-label').textContent = 'music paused';
-      musicStatus.textContent = 'The audio could not play. Try the player controls.';
+      musicStatus.textContent = 'Music could not start. Use the music button to try again.';
       musicPanel.hidden = false;
       musicVolumeToggle.setAttribute('aria-expanded', 'true');
       musicVolumeToggle.setAttribute('aria-label', 'Hide music volume controls');
@@ -141,6 +142,8 @@
   }
   function startBoot() {
     monitorStage.dataset.power = 'booting';
+    // Start inside the power-button gesture so audio is allowed during startup.
+    startMusic();
     bootScreen.hidden = false;
     document.getElementById('bootMessage').textContent = 'Waking up a little world…';
     monitorStatus.textContent = 'BOOTING…';

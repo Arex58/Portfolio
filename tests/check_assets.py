@@ -7,7 +7,7 @@ from functools import partial
 from threading import Thread
 import atexit
 import re
-import zipfile
+import struct
 
 root=Path(__file__).resolve().parents[1]
 # Self-contained HTTP check, including the same subdirectory used on GitHub Pages.
@@ -38,11 +38,11 @@ for p in c.assets:
         assert r.status==200,p
         r.read()
 assert len(list((root/'assets/icons').glob('*.png')))==7
-archive=Path.home()/'Downloads/game_portfolio_icons_7.zip'
-if archive.exists():
-    with zipfile.ZipFile(archive) as z:
-        for name in z.namelist():
-            if name.endswith('.png'):assert z.read(name)==(root/'assets/icons'/name).read_bytes(), 'Modified supplied icon '+name
+for icon in (root/'assets/icons').glob('*.png'):
+    header = icon.read_bytes()[:26]
+    assert header[:8] == b'\x89PNG\r\n\x1a\n', icon
+    assert struct.unpack('>II', header[16:24]) == (64, 64), 'Expected compact pixel icon: '+icon.name
+    assert header[25] == 6, 'Expected RGBA transparency: '+icon.name
 for p in ['script.js','room.js','styles.css','cozy.css','workstation.css','assets/portfolio.css']:
     with urlopen(base+p) as r:
         assert r.status==200

@@ -73,7 +73,7 @@ test('monitor power, desktop controls, drag, resize, keyboard movement, and focu
   await page.locator('#powerToggle').click();
   await expect(page.locator('#monitorStage')).toHaveAttribute('data-power', 'on');
   await expect(page.locator('#monitorLive')).not.toHaveAttribute('inert', '');
-  await expect(page.locator('#musicToggle')).toHaveAttribute('aria-pressed', 'false');
+  await expect(page.locator('#musicToggle')).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('#homeTitle')).toBeFocused();
   const win = await launch(page, 'projects');
   const before = await win.boundingBox();
@@ -119,7 +119,7 @@ test('monitor power, desktop controls, drag, resize, keyboard movement, and focu
   await page.screenshot({ path: 'test-results/desktop-day.png', fullPage: true });
 });
 
-test('music is opt-in, reflects player state, stops on close, and fits on mobile', async ({ page }) => {
+test('music starts with power, reflects player state, stops on power off, and fits on mobile', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 740 });
   await page.addInitScript(() => {
     window.musicTest = { plays: 0, pauses: 0, startAt: [] };
@@ -137,9 +137,6 @@ test('music is opt-in, reflects player state, stops on close, and fits on mobile
   await enter(page);
   const toggle = page.locator('#musicToggle');
   const audio = page.locator('#backgroundMusic');
-  await expect(toggle).toHaveAttribute('aria-pressed', 'false');
-  expect(await page.evaluate(() => window.musicTest.plays)).toBe(0);
-  await toggle.click();
   await expect(toggle).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('#musicPanel')).toBeHidden();
   await page.locator('#musicVolumeToggle').click();
@@ -181,6 +178,23 @@ test('music is opt-in, reflects player state, stops on close, and fits on mobile
   await page.reload();
   await expect(page.locator('#monitorStage')).toHaveAttribute('data-power', 'off');
   await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+});
+
+test('blocked startup music can be retried with the music button', async ({ page }) => {
+  await page.addInitScript(() => {
+    let attempts = 0;
+    HTMLMediaElement.prototype.play = function () {
+      if (++attempts === 1) return Promise.reject(new DOMException('Blocked', 'NotAllowedError'));
+      this.dispatchEvent(new Event('play'));
+      return Promise.resolve();
+    };
+  });
+  await enter(page);
+  await expect(page.locator('#musicToggle')).toHaveAttribute('aria-pressed', 'false');
+  await expect(page.locator('#musicStatus')).toHaveText('Music could not start. Use the music button to try again.');
+  await page.locator('#musicToggle').click();
+  await expect(page.locator('#musicToggle')).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('#musicStatus')).toBeEmpty();
 });
 
 test('music uses the local MP3 without loading the YouTube player API', async ({ page }) => {
