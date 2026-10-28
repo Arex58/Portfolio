@@ -74,6 +74,7 @@ test('monitor power, desktop controls, drag, resize, keyboard movement, and focu
   await expect(page.locator('#monitorStage')).toHaveAttribute('data-power', 'on');
   await expect(page.locator('#monitorLive')).not.toHaveAttribute('inert', '');
   await expect(page.locator('#musicToggle')).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('#soundToggle')).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('#homeTitle')).toBeFocused();
   const win = await launch(page, 'projects');
   const before = await win.boundingBox();
@@ -111,8 +112,9 @@ test('monitor power, desktop controls, drag, resize, keyboard movement, and focu
   await expect(page.locator('body')).toHaveAttribute('data-theme', 'day');
   await expect(page.locator('#monitorStage')).toHaveAttribute('data-power', 'off');
   await page.locator('#powerToggle').click();
-  await page.locator('#soundToggle').click();
   await expect(page.locator('#soundToggle')).toHaveAttribute('aria-pressed', 'true');
+  await page.locator('#soundToggle').click();
+  await expect(page.locator('#soundToggle')).toHaveAttribute('aria-pressed', 'false');
   await page.locator('#powerToggle').click();
   await expect(page.locator('#monitorStage')).toHaveAttribute('data-power', 'off');
   await expect(page.locator('#musicToggle')).toHaveAttribute('aria-pressed', 'false');
@@ -206,6 +208,29 @@ test('music uses the local MP3 without loading the YouTube player API', async ({
   await enter(page);
   await expect(page.locator('#backgroundMusic')).toHaveAttribute('src', 'assets/background-music.mp3');
   expect(youtubeRequests).toBe(0);
+});
+
+test('inventory hints, open states, and keyboard focus stay synchronized', async ({ page }) => {
+  await enter(page);
+  const shortcut = page.locator('.shortcut[data-open="projects"]');
+  await page.locator('.shortcut[data-open="about"]').focus();
+  await page.keyboard.press('Tab');
+  await expect(shortcut).toBeFocused();
+  await expect(shortcut.locator('.shortcut-tooltip')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(shortcut.locator('.shortcut-tooltip')).toBeHidden();
+  await page.keyboard.press('Enter');
+  await expect(shortcut).toHaveAttribute('aria-expanded', 'true');
+  await expect(shortcut).toHaveClass(/is-open/);
+  await expect(page.locator('#osStatus')).toHaveText('1 WINDOW OPEN');
+  await page.locator('[data-app="projects"] [data-action="minimize"]').click();
+  await expect(shortcut).toHaveAttribute('aria-expanded', 'false');
+  await expect(shortcut).toHaveClass(/is-open/);
+  await page.getByRole('button', { name: 'Show my_projects' }).click();
+  await page.keyboard.press('Escape');
+  await expect(shortcut).not.toHaveClass(/is-open/);
+  await expect(shortcut).toBeFocused();
+  await expect(page.locator('#osStatus')).toHaveText('DESKTOP / 07 APPS');
 });
 
 test('JARVIS navigation, contact actions, and résumé', async ({ page, context }) => {

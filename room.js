@@ -7,7 +7,6 @@
   const cat = document.getElementById('smokey');
   const catCanvas = document.getElementById('smokeyCanvas');
   const c = catCanvas.getContext('2d');
-  const area = document.getElementById('smokeyArea');
   const bubble = document.getElementById('smokeyBubble');
   const motionButton = document.getElementById('motionToggle');
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
@@ -151,7 +150,9 @@
   function drawCat(time, expression, facing = 1) {
     c.clearRect(0,0,96,72); c.save();
     if (facing===-1) { c.translate(96,0); c.scale(-1,1); }
-    const frame = Math.floor(time*3)%6;
+    // One small tail flick every sixteen seconds; otherwise the sprite rests.
+    const phase = time % 16;
+    const frame = phase > 14 ? Math.floor((phase - 14)*3) : 0;
     const walking = expression==='walk', sleeping=expression==='sleep';
     const breath = Math.floor(time*1.1)%2;
     tail(frame, !walking);
@@ -181,59 +182,36 @@
     }
     c.restore();
   }
-  let state='idle', elapsed=0, duration=10, clock=0, x=0, fromX=0, targetX=0, facing=1, surface=0, fromSurface=0, targetSurface=0;
+  let state='idle', elapsed=0, duration=12, clock=0;
   let userPaused=false, raf=0, lastDraw=0, bubbleUntil=0, interactionCount=0;
   let knownReducedMotion=reducedMotion.matches;
   const paused = () => userPaused || reducedMotion.matches;
-  const maxX = () => Math.max(0,area.clientWidth-cat.clientWidth);
+  const messages = ['Smokey is supervising.', 'Currently judging my code.', 'Professional keyboard inspector.', 'Another bug? Interesting.'];
   function setState(next, seconds) { state=next; elapsed=0; duration=seconds; cat.dataset.state=next; }
-  function say(message, seconds=2.4) { bubble.textContent=message; bubbleUntil=seconds; }
-  function settle() {
-    if (mobile.matches) { setState(Math.random()<.4?'sleep':'look', 12+Math.random()*18); return; }
-    const chance=Math.random();
-    if (chance<.25) setState('sleep',22+Math.random()*22);
-    else if (chance<.5) setState('look',5+Math.random()*8);
-    else if (chance<.82 && maxX()>12) {
-      fromX=x; targetX=x>maxX()*.5?0:maxX(); facing=targetX<x?-1:1;
-      // Step off the low cushion before walking along the desk.
-      if(surface) { fromSurface=surface; targetSurface=0; targetX=x; setState('jump',.8); }
-      else setState('walk',Math.max(2.5,Math.abs(targetX-x)/18));
-    } else if (x>maxX()*.6 && !surface && maxX()>12) {
-      fromX=x;targetX=maxX();fromSurface=surface;targetSurface=9;setState('jump',.85);
-    } else setState('idle',9+Math.random()*14);
+  function say(message, seconds=3.5) {
+    bubble.textContent=message; bubbleUntil=seconds;
+    if(!raf&&!document.hidden) {lastDraw=0;raf=requestAnimationFrame(tick);}
   }
-  function positionCat(lift=0) {
-    x=Math.max(0,Math.min(maxX(),x));
-    cat.style.transform=`translate(${Math.round(x)}px, ${-Math.round(surface+lift)}px)`;
-  }
+  function positionCat() { cat.style.transform='none'; }
   function updateCat(dt) {
     clock+=dt; elapsed+=dt;
-    if (elapsed>=duration) {
-      if(state==='walk') x=targetX;
-      if(state==='jump') {x=targetX;surface=targetSurface;}
-      if (['walk','jump','pet','blep','wake'].includes(state)) setState('idle',10+Math.random()*12); else settle();
-    }
-    let lift=0;
-    if (state==='walk') { const t=Math.min(1,elapsed/duration); x=fromX+(targetX-fromX)*t; }
-    if (state==='jump') {
-      const t=Math.min(1,elapsed/duration); x=fromX+(targetX-fromX)*t;
-      surface=fromSurface+(targetSurface-fromSurface)*t; lift=4*t*(1-t)*32;
-      // Snap the final fraction onto the destination surface before settling.
-      if (t>.93) { surface=targetSurface; lift=0; }
-    }
-    positionCat(lift);
-    drawCat(clock,state==='wake'?'look':state==='jump'?'walk':state,facing);
+    if (elapsed>=duration) setState('idle', 16);
+    drawCat(clock,state==='wake'?'look':state);
   }
   function interact() {
     interactionCount++;
-    // Every eleventh greeting is the rare tongue-out photo reference.
     const blep=interactionCount%11===0;
-    facing=1; setState(blep?'blep':'pet',blep?1.8:2.6);
-    say(blep?'…blep.': ['Mrrp!','Purrr.','♡','Hello, human.'][Math.floor(Math.random()*4)]);
-    if (paused()) { drawCat(1,blep?'blep':'pet'); positionCat(); if(!raf&&!document.hidden){lastDraw=0;raf=requestAnimationFrame(tick);} }
+    setState(blep?'blep':'pet',blep?1.8:2.6);
+    say(blep?'…blep.':messages[(interactionCount-1)%messages.length]);
+    if (paused()) drawCat(1,blep?'blep':'pet');
   }
   cat.addEventListener('click',interact);
-  document.addEventListener('drizzlehaven:power',()=>{ facing=1;setState('wake',3); if(paused())drawCat(0,'look'); });
+  cat.addEventListener('pointerenter',()=>say(messages[interactionCount%messages.length]));
+  cat.addEventListener('focus',()=>say(messages[interactionCount%messages.length]));
+  cat.addEventListener('keydown',event=>{
+    if(event.key==='Escape') {bubbleUntil=0;bubble.textContent='';}
+  });
+  document.addEventListener('drizzlehaven:power',()=>{setState('wake',3);if(paused())drawCat(0,'look');});
   function tick(now) {
     if(document.hidden) { raf=0;return; }
     // Some browsers update .matches a frame before delivering the change event.
@@ -262,8 +240,6 @@
   }
   motionButton.addEventListener('click',()=>{userPaused=!userPaused;syncMotion();});
   reducedMotion.addEventListener('change',syncMotion);
-  const resizeObserver=new ResizeObserver(()=>{x=Math.min(x,maxX());targetX=Math.min(targetX,maxX());if(mobile.matches){surface=0;setState('idle',14);}positionCat();});
-  resizeObserver.observe(area);
   document.addEventListener('visibilitychange',()=>{
     if(document.hidden) {cancelAnimationFrame(raf);raf=0;lastDraw=0;}
     else if(!raf)raf=requestAnimationFrame(tick);

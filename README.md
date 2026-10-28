@@ -1,6 +1,6 @@
 ﻿# Smokey's Studio
 
-Alejandro Peña's personal desktop portfolio. **Where ideas find their home.**
+Alejandro Peña's personal desktop portfolio. Websites, games, and side projects, with Smokey supervising.
 
 A pastel pixel-art computer in a rainy nighttime room, with an original animated Smokey companion based on her photographs. The real portfolio runs inside the computer display. The city, rain, lamp, coffee, keyboard, mouse, and Smokey live outside it.
 
@@ -50,11 +50,13 @@ Then open http://127.0.0.1:8000/Portfolio/. The browser tests automatically star
 | `cozy.css` | Semantic day/night colors, Smokey's Studio styling, rain, image framing, responsive and container rules |
 | `workstation.css` | Current pixel room, computer casing, desk props, screen hierarchy, responsive layouts |
 | `room.js` | Original canvas city and Smokey artwork, rain rendering, cat state machine, motion controls |
+| `desk-controls.js` | Working desk keys, text selection, JARVIS submission, draggable mouse, screen cursor and pointer activation |
 | `assets/portfolio.css` | Generated stylesheet loaded by the page; include in commits |
 | `index.html` | Existing content and application templates, new studio identity |
 | `script.js` | Boot, app launcher, drag/resize, taskbar, themes, audio, JARVIS mini, trailer handling |
-| `assets/drizzlehaven.svg` | Custom cloud-and-home studio mark and favicon |
+| `assets/smokey-face.svg` | Smokey's pixel face on a transparent background; OS taskbar icon and favicon |
 | `assets/rain-streaks.svg` | Small repeating SVG rain texture |
+| `assets/keycaps.svg` | Original 24×16 SVG key tile with four flat shades; native-size desktop and half-size mobile rendering |
 | `assets/rainy-desk.svg`, `assets/rainy-desk-pixel.png` | Legacy assets; no longer shown in the portfolio |
 | `playwright.config.js`, `tests/desktop.spec.js`, `tests/room.spec.js` | Browser regression checks, scene behavior tests, and screenshots |
 | `tests/check_assets.py` | Self-contained asset, template, encoding, and subdirectory checks |
@@ -73,10 +75,13 @@ Dependencies: `tailwindcss` 4.3.3, `@tailwindcss/cli` 4.3.3, and `@playwright/te
 - **Escape** closes the top window and restores focus. Taskbar buttons restore minimized apps.
 - Mobile uses full-screen application sheets with internal scrolling.
 - Press the physical yellow power button to start. The 1.7-second boot can be skipped; subsequent boots in the tab take 450ms. Reduced motion loads in 100ms with no flicker. Power off cancels startup and stops audio.
-- Day/night preference is saved locally. Background music starts at 30% volume with the monitor power button, loops, and stops on power-off. The taskbar music button can turn it off or retry blocked playback; interface sounds remain optional and off by default.
-- Pet Smokey with click, tap, Enter, or Space. She blinks, looks around, walks, rests, and occasionally hops onto her cushion. Every eleventh greeting briefly reveals her tongue-out expression.
-- Her walking and jumping stay in a safe desk area below the computer. Mobile keeps her stationary, with idle, looking, and sleeping poses.
+- Day/night preference is saved locally. Pressing power starts the looping music at 30% volume and enables interface sounds. Both taskbar toggles can mute them independently; power-off stops the music and disables interface sounds. Each new power-on enables both again. Nothing plays before the power-button gesture.
+- Pet Smokey with click, tap, Enter, or Space. She stays on her cushion, occasionally blinks, and gives a small tail flick every sixteen seconds. Greetings rotate through four messages; every eleventh pet reveals her tongue-out expression.
+- Shortcuts retain their original 64×64 PNGs. Hover or keyboard focus reveals a description; Escape dismisses it. A mint corner marker identifies open apps, including minimized ones. Mobile uses three columns and 44px minimum window/control touch targets.
 - Pause room motion with the footer control. System reduced motion also stops rain, steam, and character movement. Hidden tabs cancel the scene's animation frame loop; visible animation is capped at 20fps.
+- The desk keyboard types into the selected text field, or opens JARVIS when none is available. Shift toggles capitals; Del deletes the selection or preceding character; Enter submits. Pointer presses preserve text selection, and every key also works with keyboard focus.
+- Drag the mint desk mouse to move the pixel cursor inside the display. Tap/click it to activate the pointed control. When the mouse has keyboard focus, arrow keys move the cursor, Shift+Arrow moves precisely, Home centers it, and Enter/Space clicks. The wheel over its pad scrolls the pointed panel. The controls are disabled when the computer is off.
+- The top title is text only. The OS taskbar and favicon use only Smokey's pixel face. The SS_ monograms, bookshelf, wall print, and visible mouse instructions have been removed; the desk cat remains. Mouse instructions are available as an accessible description.
 
 The seven app icons use generated pixel artwork with shaded, recognizable objects. Project images remain intact. See `assets/icons/ARTWORK.md` for the icon prompts and provenance. Project images use contain framing. JARVIS mini remains a scripted navigation guide, separate from the in-progress Windows assistant. No experience, project features, or achievements were added.
 

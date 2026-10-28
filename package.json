@@ -7,7 +7,7 @@
     "dev": "tailwindcss -i ./css/tailwind.css -o ./assets/portfolio.css --watch",
     "build": "tailwindcss -i ./css/tailwind.css -o ./assets/portfolio.css --minify",
     "preview": "python -m http.server 8000 --bind 127.0.0.1",
-    "check": "node --check script.js && node --check room.js",
+    "check": "node --check script.js && node --check room.js && node --check desk-controls.js",
     "test": "npm run check && playwright test",
     "test:assets": "python tests/check_assets.py"
   },

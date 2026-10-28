@@ -1,50 +1,39 @@
-﻿# Verification — Smokey's Studio pixel-art workstation
+﻿# Smokey's Studio refinement - verification
 
-Verified October 27, 2026 in the existing repository. Changes are local; no commit, push, or deployment was performed.
+October 28, 2026. Implemented in the existing local checkout; no deployment or new dependencies.
 
-## Delivered
+## Changes and files
 
-- `index.html`: layered room markup, physical computer, boot overlay, functional terminal panel, desk props, accessible Smokey and motion controls. Removed the white-background desk illustration from the interface.
-- `workstation.css`: pastel pixel computer, window/desk composition, readable OS layout, scanlines, responsive screen and app layouts, theme colors, focus styles, steam and boot effects.
-- `room.js`: original integer-coordinate canvas skyline and transparent Smokey character; rain, window trails, slow building-light changes, reflections, blink/ear/tail details, looking, walking, sleeping/breathing, cushion jumps, pet reactions, and rare tongue-out greeting.
-- `script.js`: short cancellable/skippable startup, faster return visits, reduced-motion startup, focus handling, and music that starts during the power-button gesture at 30% volume.
-- `css/tailwind.css`, `assets/portfolio.css`: existing Tailwind build retained and compiled with the new stylesheet.
-- `package.json`, browser tests, asset checks, and README updated for the new source files and interactions.
+- `index.html`: personal interface copy, disk-drive detail, OS window-count display, and audio with `preload="none"`. Follow-up removes the SS_ monograms, bookshelf, wall print, header cat and visible mouse instructions. The taskbar icon and favicon now feature only Smokey's face on a transparent background; the desk keyboard/mouse are real controls.
+- `workstation.css`: restrained casing wear, bevels and vents; quieter window reflections; pixel keycaps; native 64x64 inventory icons with hints, individual brief reactions and open-app markers; readable companion typography; mobile compositions and touch targets. Scanlines and the soft screen vignette no longer cover reading material.
+- `script.js`: power-button startup enables music and interface sounds, as requested. Both remain individually mutable through their toggles; power-off stops both, and the next startup re-enables both. Accessible shortcut descriptions, dismissible hints, synchronized open/minimized states, OS window count and existing window controls are retained.
+- `desk-controls.js` (new): clickable QWERTY keys with selection editing, Shift, Space, Backspace and form submission; opens JARVIS if no text field is selected. A draggable desk mouse moves the screen cursor and activates the pointed control, with arrow-key and wheel support. Both peripherals are disabled while powered off. `package.json` includes the new module in syntax checks.
+- `room.js`: existing recognizable Smokey sprite preserved, stationary on the cushion, with blinking, an occasional tail flick, pet reactions, four rotating messages and the original rare tongue-out greeting. Pause/reduced-motion and hidden-tab handling retained.
+- `assets/keycaps.svg`: tile from the earlier refinement, retained; interactive HTML buttons now render the visible keys. All seven existing PNG icons and project illustrations are unchanged. `assets/smokey-face.svg` is a new hand-drawn 32px SVG: Smokey's charcoal face, golden eyes and pale whiskers on a transparent background, with no house. It replaces the old rainy-house icon in the taskbar and favicon; the top title is text only.
+- `assets/portfolio.css`: rebuilt with the existing Tailwind pipeline.
+- `tests/desktop.spec.js`, `tests/room.spec.js`: updated audio and cat expectations; keyboard hint/open-state regression and initial mobile power-button visibility checks.
+- `tests/desk-controls.spec.js` (new): real key clicks, selection replacement, Shift, submit, power-off disabling, mouse dragging/click targeting, keyboard-only use, touch tapping, logo loading and responsive bounds.
+- `README.md`, this file: updated behavior and verification documentation.
 
-## Checks completed
+## Validation
 
-- `npm run build`: passed; compiled stylesheet is about 72 KB, with no new dependencies.
-- `npm run check`: both JavaScript files passed syntax checks.
-- `npm run test:assets`: passed. All 19 HTML-referenced local assets returned HTTP 200; 17 launch targets resolved; 19 images had alt attributes; IDs were unique; CSS braces and UTF-8 were valid. Compiled CSS URLs resolved under `/Portfolio/`.
-- `npm test`: **17 passed** (16 in the full run, plus the new blocked-playback recovery test) in installed Chrome, using the existing Playwright setup and `/Portfolio/` server path.
-- Compared all 11 original HTML content templates with Git HEAD, normalizing only line endings: unchanged. Existing résumé, project artwork, contact details, and external destinations were retained. The seven application icons were replaced with generated pixel artwork.
+- `npm run build` and `npm run check`: passed.
+- `npm test`: 25/25 passed after the icon, mouse-pad and startup-audio updates. The latest log is `test-results/latest-run.log`.
+- `npm run test:assets`: passed. Twenty HTML-referenced assets return HTTP 200, seventeen launch targets resolve, IDs are unique, image alt attributes exist, CSS/UTF-8 checks pass, and compiled CSS asset paths resolve under `/Portfolio/`.
+- Source comparison against Git HEAD: all eleven portfolio templates and all existing `href` destinations are unchanged.
+- Chrome browser scenarios cover all seven applications and four project detail windows at 1440x1000, 1024x768, 768x1024, 390x844 and 320x740, with no horizontal overflow or JavaScript errors.
+- Interaction coverage: startup skip/cancel/repeat, inert off-screen controls, window drag/resize/maximize/minimize/restore, keyboard movement and focus restoration, persistent themes, startup music/interface sounds, volume/mute/retry/power-off, JARVIS, email URL, clipboard, and resume PDF.
+- Room coverage: stationary Smokey over a simulated minute, keyboard petting and rare greeting, paused canvas stability, live reduced-motion changes, and mobile intro/power control access.
+- Keyboard hint/open-state coverage uses a real Tab key transition; programmatic focus after a mouse click does not trigger the browser's `:focus-visible` state.
 
-Browser checks covered:
+## Visual review and screenshots
 
-- All seven apps and four project detail windows at 1440×1000, 1024×768, 768×1024, 390×844, and 320×740; no horizontal overflow or page JavaScript errors.
-- Power-on, power-off, startup skip and cancellation, inert off-screen controls, and keyboard focus.
-- Window drag, resize, keyboard move/resize, maximize, minimize, restore, close, and focus restoration.
-- Day/warm palette persistence and narrow 340px app windows.
-- Startup local music, volume, playback-state UI, retry after rejected playback, and stopping audio on power-off. Startup was checked with the real media element; deterministic control/recovery tests mock playback. Speaker output was not evaluated.
-- JARVIS guide navigation, contact mail URL, clipboard copy, résumé URL and PDF content type.
-- Smokey keyboard interaction and tongue-out greeting, safe walking bounds, a raised cushion jump, sleeping, and simplified stationary mobile behavior. Behavior tests use a virtual clock and controlled randomness; production behavior remains randomized.
-- Pause/resume and live reduced-motion preference changes in both directions, including canvas pixel stability while paused.
-- Mobile introduction and actions remain available.
+Reviewed desktop and phone compositions, startup, project/contact windows, and warm/night palettes in headless Chrome. The phone opening screen keeps the physical power control in view, then expands the desktop for readable content. Mobile desktop content remains scrollable when needed.
 
-Reviewed the generated desktop, tablet/mobile, project, and contact screenshots. The decorative desk overhang now uses `overflow: clip` so focusing portfolio windows cannot shift the room sideways. Added screen height to keep the introduction clear of the OS menubar.
+Final captures are in `test-results/`: `desk-controls-1440.png`, `desk-controls-768.png`, `desk-controls-390.png`, and `desk-controls-320.png`, plus the existing application-suite screenshots. These generated files are ignored by Git.
 
-## Animation and artwork
+## Limits
 
-Room canvas drawing is limited to 20fps and uses a cached static city layer. Hidden tabs cancel the animation-frame loop and pause CSS effects. Paused/reduced-motion scenes stop scheduling frames after any brief interaction bubble finishes. Art is drawn in code with crisp pixel scaling; the user’s photographs are references, not displayed sprite images. The seven app icons were generated with the built-in image_gen tool and exported as local transparent 64 x 64 PNGs. No runtime image service is required. See `assets/icons/ARTWORK.md` for prompts and paths.
+Physical devices, Safari/Firefox, audio hardware, actual email delivery, and live YouTube playback were not tested. Existing mail/trailer destinations and fallback links are preserved. Fonts and YouTube still depend on network access. No formal accessibility or device frame-rate audit was performed.
 
-Smokey remains below the screen. Mobile disables roaming and jumps. The small cushion is the only raised destination; she has no route through the computer or portfolio content.
-
-## Remaining verification limits
-
-- Physical phones, Safari, Firefox, audio hardware, and actual mail-client launching were not exercised.
-- YouTube playback and final hosted GitHub Pages deployment were not verified. The existing original-trailer links and player error fallback remain.
-- Google Fonts and YouTube still require network access; local fallback fonts are retained.
-- No formal device frame-rate or accessibility audit was performed.
-- The in-app browser preview surface was unavailable. Local Chrome screenshot and automated browser verification succeeded.
-
-Screenshots and traces are in ignored `test-results/`. Include the generated `assets/portfolio.css` and new `room.js` when publishing through the existing GitHub Pages workflow.
+No user input is required for this local refinement. Commit the rebuilt `assets/portfolio.css` alongside the source files when publishing through the existing workflow.

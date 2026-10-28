@@ -46,6 +46,24 @@
   let musicVolume = musicVolumeControl.valueAsNumber;
   let musicPlaying = false;
   const launchers = new Map();
+  const shortcutHints = {
+    about: 'Meet Alex & Smokey', projects: 'Browse four projects', skills: 'Open my toolbox',
+    experience: 'How I got here', resume: 'Read or download PDF', jarvis: 'Ask the site guide', contact: 'Send me a hello'
+  };
+  document.querySelectorAll('.shortcut').forEach(button => {
+    const hint = document.createElement('span');
+    hint.className = 'shortcut-tooltip';
+    hint.textContent = shortcutHints[button.dataset.open];
+    hint.setAttribute('aria-hidden', 'true');
+    button.append(hint);
+    button.setAttribute('aria-description', hint.textContent);
+    button.setAttribute('aria-expanded', 'false');
+    button.addEventListener('pointerenter', () => button.classList.remove('hint-dismissed'));
+    button.addEventListener('focus', () => button.classList.remove('hint-dismissed'));
+    button.addEventListener('keydown', event => {
+      if (event.key === 'Escape') { button.classList.add('hint-dismissed'); event.stopPropagation(); }
+    });
+  });
   // Share the pixel icons between window chrome and desktop shortcuts.
   const iconFiles = {about:'about_me',projects:'my_projects',skills:'toolbox',experience:'my_story',resume:'resume',contact:'say_hi',jarvis:'jarvis','project-jarvis':'jarvis','project-game':'my_projects','project-nightcrawler':'my_projects','project-academy':'my_projects'};
   function appLabel(parent, name) {
@@ -142,10 +160,12 @@
   }
   function startBoot() {
     monitorStage.dataset.power = 'booting';
-    // Start inside the power-button gesture so audio is allowed during startup.
+    // Start both inside the explicit power-button gesture.
+    setSound(true);
     startMusic();
+    beep(520);
     bootScreen.hidden = false;
-    document.getElementById('bootMessage').textContent = 'Waking up a little world…';
+    document.getElementById('bootMessage').textContent = 'Starting Smokey’s Studio/OS…';
     monitorStatus.textContent = 'BOOTING…';
     powerToggle.setAttribute('aria-label', 'Power off monitor');
     powerToggle.setAttribute('aria-pressed', 'true');
@@ -154,7 +174,7 @@
     document.dispatchEvent(new CustomEvent('drizzlehaven:power'));
     let returning = false;
     try { returning = sessionStorage.getItem('drizzlehaven-booted') === 'true'; } catch (_) {}
-    bootMessageTimer = setTimeout(() => { document.getElementById('bootMessage').textContent = 'Projects ready. Curiosity loaded.'; }, 650);
+    bootMessageTimer = setTimeout(() => { document.getElementById('bootMessage').textContent = 'Seven apps ready. Smokey is supervising.'; }, 650);
     bootTimer = setTimeout(finishBoot, reducedMotion.matches ? 100 : returning ? 450 : 1700);
   }
   function setMonitorPower(poweredOn) {
@@ -172,6 +192,7 @@
       document.getElementById('homeTitle').focus({ preventScroll: true });
     } else {
       stopMusic();
+      setSound(false);
       opened.get('project-game')?.videoPlayer?.pauseVideo?.();
       powerToggle.focus({ preventScroll: true });
     }
@@ -251,6 +272,12 @@
   }
   function syncTaskbar() {
     taskButtons.replaceChildren();
+    document.querySelectorAll('.shortcut').forEach(button => {
+      const win = opened.get(button.dataset.open);
+      button.classList.toggle('is-open', Boolean(win));
+      button.setAttribute('aria-expanded', String(Boolean(win && !win.classList.contains('is-minimized'))));
+    });
+    document.getElementById('osStatus').textContent = opened.size ? `${opened.size} WINDOW${opened.size === 1 ? '' : 'S'} OPEN` : 'DESKTOP / 07 APPS';
     opened.forEach((el, name) => {
       const b = document.createElement('button');
       b.type = 'button'; b.className = 'task-window';
@@ -388,11 +415,14 @@
   try { savedTheme=localStorage.getItem('drizzlehaven-theme') || 'night'; } catch (_) {}
   setTheme(savedTheme);
   themeToggle.addEventListener('click', () => { setTheme(document.body.dataset.theme === 'night' ? 'day' : 'night'); beep(750); });
-  soundToggle.addEventListener('click', () => {
-    soundOn = !soundOn;
+  function setSound(enabled) {
+    soundOn = enabled;
     soundToggle.innerHTML = `${soundOn ? '♫' : '♪̸'} <span class="task-action-name">sound ${soundOn ? 'on' : 'off'}</span>`;
     soundToggle.setAttribute('aria-pressed', String(soundOn));
     soundToggle.setAttribute('aria-label', `Turn sound ${soundOn ? 'off' : 'on'}`);
+  }
+  soundToggle.addEventListener('click', () => {
+    setSound(!soundOn);
     note(`Interface sound ${soundOn ? 'on' : 'off'}.`); beep(820);
   });
   function updateClock() {

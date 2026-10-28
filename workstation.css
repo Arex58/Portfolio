@@ -116,3 +116,262 @@ body.room-paused .room-environment *, body.room-paused .desk-foreground *, body.
   .monitor-stage { padding-top: 178px; }
   .city-window { height: 360px; }
 }
+
+/* Handcrafted pass: four-pixel hardware details, native-size inventory art.
+   Keep these scene rules together; content/window foundations live in cozy.css. */
+body[data-theme] {
+  --case-light: #ffceac;
+  --case-shadow: #a65f83;
+  --room-outline: #211a32;
+  --reading-font: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.monitor-stage { padding-top: 164px; padding-bottom: 24px; }
+.city-window { height: 500px; }
+.city-window canvas { object-fit: cover; opacity: .82; }
+.window-reflection { opacity: .025; }
+.wall-print { transform: none; width: 96px; top: 242px; }
+.wall-print span { font-size: 10px; }
+.wall-print svg { display: block; width: 48px; height: 40px; margin: 12px auto; }
+.wall-print small { font-size: 10px; }
+.room-shelf { top: 288px; }
+.shelf-book:nth-child(3) { transform: none; }
+.room-caption { top: 100px; font-size: 14px; letter-spacing: .08em; }
+.monitor-shell { filter: none; box-shadow: 12px 12px #201a3166; }
+.monitor-bezel { padding-top: 24px; }
+.monitor-bezel::before {
+  width: 84px; height: 4px; left: 28px; top: 8px;
+  background: var(--case-light);
+  box-shadow: 88px 0 var(--case-light), 0 4px #f2ba9e, 380px 0 #b97888, 384px 4px #f2ba9e;
+}
+.monitor-bezel::after {
+  top: 32px; right: 12px; width: 4px; height: 36px;
+  background: var(--case-shadow);
+  box-shadow: 0 44px var(--case-shadow), 0 88px var(--case-shadow), 0 132px var(--case-shadow), 0 176px var(--case-shadow);
+}
+.monitor-screen { height: 560px; }
+/* Remove the inherited soft vignette and scanlines over reading material. */
+.monitor-screen::after { background: none; box-shadow: inset 4px 4px #11142b55; }
+.monitor-bezel-label { min-height: 52px; }
+.monitor-bezel-label > span:first-child::after {
+  content: 'SS–01'; font: 12px var(--mono); letter-spacing: .06em;
+  padding: 2px 6px; border: 1px solid #8b536f; color: #513449;
+}
+.monitor-base { min-height: 68px; gap: 24px; }
+.monitor-brand { width: 112px; height: 16px; flex-shrink: 0; }
+.disk-drive { position: relative; width: 100px; height: 24px; border: 4px solid #8d5a83; background: #573b56; box-shadow: 0 4px #e3a29b; }
+.disk-drive::before { content: ''; position: absolute; left: 4px; right: 4px; top: 4px; height: 4px; background: #211a32; }
+.disk-drive i { position: absolute; right: 4px; bottom: -4px; width: 16px; height: 4px; background: #c28b9c; }
+.monitor-status { font-size: 14px; }
+.monitor-power { min-height: 44px; }
+.monitor-live .desktop-content { gap: 20px 28px; padding: 48px 32px 20px; }
+.studio-tagline { font: 15px/1.4 var(--mono); letter-spacing: .08em; }
+.hello-panel h1 { font-size: 28px; }
+.hello-panel h1 span { font-size: 23px; }
+.intro-copy { font: 15px/1.65 var(--reading-font); margin-block: 12px 16px; }
+.terminal-comment { font-size: 16px; }
+.desktop-terminal .terminal-body { padding: 12px 16px; color: var(--ink); }
+.terminal-cursor { animation: none; }
+.os-menubar { font-size: 14px; padding-block: 7px; letter-spacing: .03em; }
+.workspace-shelf { grid-column: 1 / -1; }
+.desktop-shortcuts { gap: 8px; padding-top: 16px; }
+.shortcut {
+  position: relative; min-width: 0; min-height: 100px; padding: 8px 4px 6px;
+  border: 1px solid var(--line); background: var(--paper);
+  box-shadow: inset 2px 2px var(--paper-2), 2px 2px #111b2b55;
+}
+.shortcut .icon-art { width: 64px; height: 64px; }
+.shortcut > span { font: 16px/1.25 var(--mono); }
+.shortcut:hover, .shortcut:focus-visible { background: var(--paper-2); border-color: var(--accent); }
+.shortcut:hover .icon-art, .shortcut:focus-visible .icon-art { transform: translateY(-4px); }
+.shortcut.is-open::after { content: ''; position: absolute; left: 4px; top: 4px; width: 4px; height: 4px; background: var(--salmon); box-shadow: 4px 0 var(--salmon); }
+.shortcut .shortcut-tooltip {
+  position: absolute; z-index: 5; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+  width: max-content; max-width: 170px; padding: 6px 8px; border: 2px solid #211a32;
+  background: #f1e0bb; color: #35273c; box-shadow: 3px 3px #211a32;
+  font: 16px/1.2 var(--mono); white-space: normal; pointer-events: none; visibility: hidden;
+}
+.shortcut:first-child .shortcut-tooltip { left: 0; transform: none; }
+.shortcut:last-child .shortcut-tooltip { left: auto; right: 0; transform: none; }
+.shortcut:not(.hint-dismissed):focus-visible .shortcut-tooltip { visibility: visible; }
+@media (hover: hover) {
+  .shortcut:not(.hint-dismissed):hover .shortcut-tooltip { visibility: visible; }
+}
+/* One brief response per interaction; the icons return to rest. */
+.shortcut[data-open="jarvis"]:is(:hover,:focus-visible) .icon-art { animation: lens-check 500ms steps(2) 1; }
+.shortcut[data-open="contact"]:is(:hover,:focus-visible) .icon-art { animation: letter-lift 400ms steps(2) 1; }
+.shortcut[data-open="projects"]:is(:hover,:focus-visible) .icon-art { animation: folder-peek 400ms steps(2) 1; }
+.shortcut[data-open="skills"]:is(:hover,:focus-visible) .icon-art { animation: toolbox-check 400ms steps(2) 1; }
+.shortcut[data-open="about"]:is(:hover,:focus-visible) .icon-art { animation: badge-check 400ms steps(2) 1; }
+.shortcut[data-open="experience"]:is(:hover,:focus-visible) .icon-art { animation: journal-check 400ms steps(2) 1; }
+.shortcut[data-open="resume"]:is(:hover,:focus-visible) .icon-art { animation: paper-check 400ms steps(2) 1; }
+@keyframes lens-check { 50% { filter: brightness(1.35); } }
+@keyframes letter-lift { 50% { transform: translateY(-8px); } }
+@keyframes folder-peek { 50% { transform: translate(4px,-4px); } }
+@keyframes toolbox-check { 50% { transform: translate(-2px,-4px); } }
+@keyframes badge-check { 50% { filter: brightness(1.15); } }
+@keyframes journal-check { 50% { transform: translate(-4px,-4px); } }
+@keyframes paper-check { 50% { transform: translateY(-6px); } }
+.task-action { min-height: 44px; }
+.inside p, .file-desc > span, .timeline-item p { font: 15px/1.7 var(--reading-font); }
+.inside li { line-height: 1.6; }
+.window-control { min-width: 36px; min-height: 36px; }
+.desk-foreground { height: 148px; margin-top: 16px; }
+.desk-lamp { width: 80px; left: -104px; bottom: 140px; filter: none; }
+.coffee-corner svg { width: 104px; height: 100px; }
+.coffee-note { font-size: 12px; }
+.coffee-steam { animation-duration: 9s; }
+.retro-keyboard { height: 96px; transform: none; padding: 8px 8px 12px; }
+.keyboard-keys { height: 48px; background: url('keycaps.svg') repeat 0 0 / 24px 16px; border: 0; }
+.keyboard-bottom { height: 16px; margin-top: 4px; }
+.smokey { left: auto; right: 0; width: 192px; height: 144px; }
+.cat-cushion { right: 24px; bottom: 22px; width: 128px; height: 20px; }
+.smokey-name { font-size: 12px; }
+.smokey-bubble { width: max-content; max-width: 220px; right: 0; top: -40px; }
+.room-footer { font-size: 13px; letter-spacing: .03em; padding-top: 10px; }
+.room-footer button { font-size: 14px; min-height: 44px; }
+body.room-paused *, body.room-paused *::before, body.room-paused *::after { animation-play-state: paused !important; }
+@media (max-width: 1250px) {
+  .wall-print, .room-shelf { display: none; }
+  .desk-lamp { left: -56px; width: 56px; }
+  .monitor-live .desktop-content { gap: 20px; padding-inline: 28px; }
+  .disk-drive { width: 72px; }
+}
+@media (min-width: 761px) and (max-width: 900px) {
+  .monitor-stage { padding-inline: 24px; }
+  .monitor-live .desktop-content { padding-inline: 16px; }
+  .desktop-shortcuts { gap: 4px; }
+  .shortcut { padding-inline: 0; }
+  .shortcut > span { font-size: 14px; }
+  .monitor-bezel-label > span:first-child::after { display: none; }
+  .smokey { width: 192px; height: 144px; }
+}
+@media (max-width: 760px) {
+  .monitor-stage { padding: 140px 14px 18px; }
+  .room-caption { top: 98px; font-size: 12px; }
+  .city-window { height: 360px; }
+  .monitor-bezel { padding: 16px 9px 0; }
+  .monitor-bezel::before { top: 4px; left: 16px; width: 40px; box-shadow: 44px 0 var(--case-light); }
+  .monitor-screen { height: 880px; }
+  .monitor-stage:not([data-power="on"]) .monitor-screen { height: clamp(360px, 52svh, 540px); }
+  .monitor-bezel-label { min-height: 40px; }
+  .monitor-bezel-label > span:first-child::after, .disk-drive { display: none; }
+  .monitor-base { min-height: 66px; gap: 8px; }
+  .monitor-brand { width: 24px; }
+  .monitor-status { font-size: 12px; }
+  .monitor-off p, .monitor-off > span { font-size: 15px; line-height: 1.5; }
+  .monitor-live .desktop-content { padding: 50px 14px 24px; gap: 16px; }
+  .monitor-live .studio-tagline { font-size: 15px; }
+  .hello-panel h1 { font-size: 21px; }
+  .monitor-live .intro-copy { font-size: 15px; line-height: 1.6; }
+  .monitor-live .quick-actions { flex-wrap: wrap; gap: 10px; }
+  .quick-actions .pill { font-size: 16px; min-height: 44px; }
+  .desktop-shortcuts, .monitor-live .desktop-shortcuts { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; }
+  .shortcut { min-height: 100px; }
+  .shortcut .icon-art { width: 64px; height: 64px; }
+  .shortcut > span { font-size: 15px; }
+  .shortcut .shortcut-tooltip { max-width: 140px; }
+  .shortcut:nth-child(3n+1) .shortcut-tooltip { left: 0; right: auto; transform: none; }
+  .shortcut:nth-child(3n) .shortcut-tooltip { right: 0; left: auto; transform: none; }
+  .monitor-live .task-action { min-height: 44px; }
+  .window-control { width: 44px; height: 44px; }
+  .window-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .inside p, .file-desc > span, .timeline-item p { font-size: 15px; }
+  .file-row { flex-wrap: wrap; }
+  .file-desc { min-width: 0; }
+  .window-kicker { overflow-wrap: anywhere; }
+  .desk-foreground { height: 176px; }
+  .keyboard-area { width: 46%; left: 0; }
+  .retro-keyboard { height: 56px; padding: 4px; }
+  .keyboard-keys { height: 32px; background-size: 12px 8px; }
+  .keyboard-bottom { height: 8px; margin-top: 2px; }
+  .coffee-corner svg { width: 78px; height: 75px; }
+  .coffee-note { font-size: 10px; white-space: normal; }
+  .smokey { width: 192px; height: 144px; }
+  .cat-cushion { right: 24px; width: 128px; height: 20px; }
+  .smokey-name { font-size: 11px; line-height: 1.3; }
+  .smokey-bubble { top: -20px; max-width: 160px; }
+  .room-footer { font-size: 12px; }
+  .room-footer button { font-size: 14px; }
+  .room-footer > span:last-child { margin-left: 0; }
+}
+@media (max-width: 370px) {
+  .monitor-stage { padding-inline: 10px; }
+  .monitor-live .desktop-content { padding-inline: 10px; }
+  .monitor-screen { height: 980px; }
+  .hello-panel h1 { font-size: 18px; }
+  .monitor-status { font-size: 11px; }
+  .shortcut { padding-inline: 0; }
+  .shortcut > span { font-size: 14px; }
+  .monitor-live .taskbar { padding-inline: 4px; }
+  .monitor-live .task-action-name, .monitor-live .music-label { font-size: 12px; }
+  .window-label .chrome-icon { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .shortcut:is(:hover,:focus-visible) .icon-art { transform: none; animation: none; }
+}
+
+/* Real desk peripherals: the keys and mouse share the computer's casing. */
+.room-heading { top: 28px; }
+.room-heading a { display: inline-flex; align-items: center; gap: 8px; }
+.room-heading a .studio-wordmark { color: #f1c7ac; }
+.monitor-live .start-btn img { width: 32px; height: 32px; flex-shrink: 0; image-rendering: pixelated; }
+.desk-foreground { grid-template-columns: .65fr 2.6fr 1fr; height: 252px; gap: 20px; }
+.desk-surface { top: calc(100% - 260px); }
+.keyboard-area { position: relative; display: flex; gap: 12px; align-items: center; transform: none; min-width: 0; }
+.keyboard-console { flex: 1; min-width: 0; }
+.retro-keyboard {
+  display: flex; flex-direction: column; gap: 4px; width: 100%; min-width: 0; height: auto;
+  margin: 0; padding: 8px 8px 12px; border: 4px solid #2d2138;
+}
+.desk-key-row { display: flex; justify-content: center; gap: 3px; }
+.desk-key {
+  display: grid; place-items: center; flex: 1; min-width: 0; min-height: 28px; padding: 0;
+  border: 1px solid #754f69; border-radius: 0; background: #eac5b1; color: #35273c;
+  box-shadow: inset 2px 2px #ffe1c3, inset -2px -2px #b98291, 0 2px #754f69;
+  font: 16px/1 var(--mono); touch-action: manipulation;
+}
+.desk-key:hover:not(:disabled), .desk-key:focus-visible, .desk-key[aria-pressed="true"] { background: #b8d5c5; }
+.desk-key:active:not(:disabled) { transform: translateY(2px); box-shadow: inset 2px 2px #9a7a84; }
+.desk-key-actions .desk-key { font-size: 13px; min-height: 30px; flex: 1.3; }
+.desk-key-actions [data-key=" "] { flex: 3; background: #b8d5c5; }
+.desk-key-actions [data-key="Enter"] { background: #f1d38f; }
+.retro-keyboard:disabled .desk-key { cursor: not-allowed; color: #75596a; }
+.desk-input-status { margin: 10px 0 0; min-height: 30px; color: #f1d4c4; font: 14px/1.25 var(--mono); text-align: center; }
+.mouse-pad { position: relative; display: grid; justify-items: center; align-content: center; align-self: center; flex: 0 0 76px; min-height: 104px; padding: 16px 4px; background: #493d54; border: 2px solid #9b7789; box-shadow: 4px 4px #36263d; }
+.retro-mouse { display: block; width: 44px; height: 64px; margin: 0; padding: 0; clip-path: none; cursor: grab; touch-action: none; border-radius: 0; }
+.retro-mouse:active:not(:disabled) { cursor: grabbing; }
+.retro-mouse:disabled { cursor: not-allowed; opacity: .65; }
+.retro-mouse i { position: absolute; left: calc(50% - 2px); top: 0; height: 24px; }
+.retro-mouse::after { content: ''; position: absolute; top: 24px; left: 0; right: 0; height: 3px; background: #698e95; }
+.desk-cursor { position: absolute; z-index: 10001; width: 24px; height: 30px; pointer-events: none; image-rendering: pixelated; }
+.desk-cursor[hidden] { display: none; }
+.desk-pointed { outline: 2px dashed var(--accent) !important; outline-offset: 2px; }
+.smokey-area { align-self: end; margin-bottom: 18px; }
+.coffee-corner { align-self: center; }
+@media (min-width: 761px) and (max-width: 1000px) {
+  .desk-foreground { grid-template-columns: 1fr 192px; height: 310px; gap: 16px; }
+  .keyboard-area { grid-column: 1 / -1; grid-row: 1; width: min(100%,600px); justify-self: center; }
+  .coffee-corner { position: absolute; bottom: 0; left: 8px; }
+  .smokey-area { grid-column: 2; grid-row: 2; height: 100px; margin-bottom: 0; }
+  .desk-surface { top: calc(100% - 320px); }
+}
+@media (max-width: 760px) {
+  .room-heading { top: 28px; gap: 9px; }
+  .room-heading a { gap: 6px; font-size: 14px; }
+  .desk-foreground { display: grid; grid-template-columns: 56px minmax(48px,1fr) 144px; height: auto; gap: 18px 8px; margin-top: 20px; }
+  .keyboard-area { display: contents; opacity: 1; }
+  .keyboard-console { grid-column: 1 / -1; grid-row: 1; }
+  .retro-keyboard { width: 100%; height: auto; padding: 6px 6px 10px; gap: 5px; }
+  .desk-key-row { gap: 2px; }
+  .desk-key { min-height: 44px; font-size: 17px; }
+  .desk-key-actions .desk-key { min-height: 44px; font-size: 14px; }
+  .desk-input-status { font-size: 14px; }
+  .mouse-pad { grid-column: 2; grid-row: 2; min-height: 104px; margin: 0; width: 100%; }
+  .coffee-corner { grid-column: 1; grid-row: 2; width: 56px; margin: 0; align-self: center; }
+  .coffee-corner svg { width: 60px; height: 58px; }
+  .coffee-note { font-size: 10px; }
+  .smokey-area { grid-column: 3; grid-row: 2; margin-bottom: 0; height: 140px; }
+  .smokey { width: 144px; height: 108px; }
+  .cat-cushion { width: 96px; right: 16px; height: 16px; }
+  .desk-surface { top: calc(100% - 490px); }
+}

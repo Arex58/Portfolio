@@ -1,9 +1,10 @@
 const { test, expect } = require('@playwright/test');
 
-test('startup plays music and can be skipped, cancelled, and repeated', async ({ page }) => {
+test('startup enables music and sounds and can be skipped, cancelled, and repeated', async ({ page }) => {
   await page.goto('./');
   await page.locator('#powerToggle').click();
   await expect(page.locator('#monitorStage')).toHaveAttribute('data-power', 'booting');
+  await expect(page.locator('#soundToggle')).toHaveAttribute('aria-pressed','true');
   await expect(page.locator('#backgroundMusic')).toHaveJSProperty('paused', false);
   await expect(page.locator('#monitorLive')).toHaveAttribute('inert', '');
   await expect(page.locator('#skipBoot')).toBeFocused();
@@ -16,6 +17,7 @@ test('startup plays music and can be skipped, cancelled, and repeated', async ({
   await page.locator('#powerToggle').click();
   await page.locator('#powerToggle').click();
   await expect(page.locator('#monitorStage')).toHaveAttribute('data-power', 'off');
+  await expect(page.locator('#soundToggle')).toHaveAttribute('aria-pressed','false');
   await expect(page.locator('#backgroundMusic')).toHaveJSProperty('paused', true);
   await page.waitForTimeout(1800);
   await expect(page.locator('#monitorLive')).toHaveAttribute('inert', '');
@@ -58,44 +60,25 @@ test('room motion pauses, resumes, and respects reduced motion', async ({ page }
   expect(await pixels()).not.toBe(reduced);
 });
 
-test('Smokey walks within her desk area, jumps onto the cushion, and settles to sleep', async ({ page }) => {
-  test.setTimeout(60000);
+test('Smokey stays on the cushion during a full minute of room animation', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.clock.install();
-  await page.addInitScript(() => { Math.random = () => .7; });
   await page.goto('./');
   const cat = page.locator('#smokey');
-  async function advanceUntil(state, steps = 120) {
-    for (let i = 0; i < steps; i++) {
-      if (await cat.getAttribute('data-state') === state) return;
-      await page.clock.runFor(250);
-    }
-    throw new Error(`Smokey never entered ${state}`);
+  const before = await cat.boundingBox();
+  for (let i=0; i<6; i++) {
+    await page.clock.runFor(10000);
+    expect(await cat.getAttribute('data-state')).toBe('idle');
+    expect(await cat.boundingBox()).toEqual(before);
   }
-  await advanceUntil('walk');
-  const start = await cat.boundingBox();
-  await advanceUntil('idle');
-  const end = await cat.boundingBox();
-  expect(end.x).toBeGreaterThan(start.x);
-  const safeArea = await page.locator('#smokeyArea').boundingBox();
-  expect(end.x + end.width).toBeLessThanOrEqual(safeArea.x + safeArea.width + 1);
-  await page.evaluate(() => { Math.random = () => .95; });
-  await advanceUntil('jump');
-  await page.clock.runFor(250);
-  const airborne = await cat.boundingBox();
-  expect(airborne.y).toBeLessThan(end.y);
-  await advanceUntil('idle');
-  await page.evaluate(() => { Math.random = () => .1; });
-  await advanceUntil('sleep');
-  const sleeping = await cat.boundingBox();
-  expect(sleeping.y).toBeLessThan(end.y);
-  expect(sleeping.y).toBeGreaterThan((await page.locator('#monitorScreen').boundingBox()).y + (await page.locator('#monitorScreen').boundingBox()).height);
 });
 
 test('mobile keeps Smokey stationary and all introduction copy accessible', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 740 });
   await page.clock.install();
   await page.goto('./');
+  const power = await page.locator('#powerToggle').boundingBox();
+  expect(power.y + power.height).toBeLessThanOrEqual(740);
   const cat = page.locator('#smokey');
   const before = await cat.boundingBox();
   await page.clock.runFor(18000);
